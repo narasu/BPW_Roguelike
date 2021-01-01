@@ -4,128 +4,77 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    private static DungeonGenerator instance;
-    public static DungeonGenerator Instance
+    void Start()
     {
-        get { return instance; }
+        CreateRooms();
     }
 
-    [SerializeField] [Range(1, 25)] private int numberOfRooms;
+    BSPLeaf root;
+    [SerializeField] private int minLeafSize = 75;
+    public int MinLeafSize { get => minLeafSize; }
+    [SerializeField] private int minEdgeOffset = 3;
+    public int MinEdgeOffset { get => minEdgeOffset; }
+    //const int MAX_LEAF_SIZE = 50;
+    [SerializeField] private Vector2Int dungeonSize;
+    
+    [HideInInspector] public List<BSPLeaf> leaves = new List<BSPLeaf>();
 
-    private Room[,] rooms;
-    private List<Room> roomList;
+    
+    
 
-    private Room startRoom;
-    private Room endRoom;
-    private Room bossRoom;
-
-    private void Awake()
+    void CreateRooms()
     {
-        instance = this;
+        root = new BSPLeaf(0, 0, dungeonSize.x, dungeonSize.y, this);
+        leaves.Add(root);
 
-        startRoom = GenerateRooms();
-    }
+        bool didSplit = true;
 
-    private void Start()
-    {
-        GenerateRooms();
-        PrintGrid();
-    }
-
-    private Room GenerateRooms()
-    {
-        int gridSize = numberOfRooms;
-        rooms = new Room[gridSize, gridSize];
-
-        //create the first room on the middle coordinate in the grid
-        Vector2Int firstCoordinate = new Vector2Int((gridSize / 2) - 1, (gridSize / 2) - 1);
-
-        //queue new rooms
-        Queue<Room> roomsToCreate = new Queue<Room>();
-        roomsToCreate.Enqueue(new Room(firstCoordinate.x, firstCoordinate.y));
-        
-        //add created rooms to list
-        List<Room> createdRooms = new List<Room>();
-        while (roomsToCreate.Count > 0 && createdRooms.Count < numberOfRooms)
+        while (didSplit)
         {
-            Room currentRoom = roomsToCreate.Dequeue();
-            rooms[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y] = currentRoom;
-            createdRooms.Add(currentRoom);
-            AddNeighbors(currentRoom,roomsToCreate);
-        }
-
-        foreach (Room room in createdRooms)
-        {
-            List<Vector2Int> neighborCoordinates = room.NeighborCoordinates();
-            foreach(Vector2Int coordinate in neighborCoordinates)
+            didSplit = false;
+            for (int i = 0; i < leaves.Count; i++)
             {
-                Room neighbor = rooms[coordinate.x, coordinate.y];
-                if (neighbor!=null)
+                if (leaves[i].leftChild == null && leaves[i].rightChild == null) //if this leaf is not already split
                 {
-                    room.Connect(neighbor);
+                    if (leaves[i].Split())
+                    {
+                        //If we did split, add child leaves to list
+                        leaves.Add(leaves[i].leftChild);
+                        leaves.Add(leaves[i].rightChild);
+                        didSplit = true;
+                    }
                 }
             }
         }
-
-        return rooms[firstCoordinate.x, firstCoordinate.y];
+        root.CreateRooms();
+        GameManager.Instance.SetRoomList(leaves);
     }
 
-    private void AddNeighbors(Room currentRoom, Queue<Room> roomsToCreate)
+    class HalfEdge
     {
-        List<Vector2Int> neighborCoordinates = currentRoom.NeighborCoordinates();
-        List<Vector2Int> availableNeighbors = new List<Vector2Int>();
+        public HalfEdge twin, next, prev;
+        public Vertex origin;
+        public Face incidentFace;
 
-        foreach (Vector2Int coordinate in neighborCoordinates)
+        public HalfEdge(Vertex _origin, Face _incidentFace)
         {
-            if (rooms[coordinate.x, coordinate.y]==null)
-            {
-                availableNeighbors.Add(coordinate);
-            }
-        }
-
-        int numberOfNeighbors = Random.Range(1, availableNeighbors.Count);
-
-        for (int i=0; i<numberOfNeighbors; i++)
-        {
-            float randomNumber = Random.value;
-            float roomFrac = 1f / availableNeighbors.Count;
-
-            Vector2Int chosenNeighbor = new Vector2Int(0, 0);
-            foreach (Vector2Int coordinate in availableNeighbors)
-            {
-                if (randomNumber < roomFrac)
-                {
-                    chosenNeighbor = coordinate;
-                    break;
-                }
-                else
-                {
-                    roomFrac += 1f / availableNeighbors.Count;
-                }
-            }
-            roomsToCreate.Enqueue(new Room(chosenNeighbor));
-            availableNeighbors.Remove(chosenNeighbor);
+            origin = _origin;
+            incidentFace = _incidentFace;
         }
     }
 
-
-    private void PrintGrid()
+    class Vertex
     {
-        for (int i = 0; i < rooms.GetLength(1); i++)
+        public Vector2Int coords;
+        public HalfEdge outgoingEdge;
+        public Vertex(Vector2Int _coords)
         {
-            string row = "";
-            for (int j = 0; j < rooms.GetLength(0); j++)
-            {
-                if (rooms[j,i] == null)
-                {
-                    row += "X";
-                }
-                else
-                {
-                    row += "R";
-                }
-            }
-            Debug.Log(row);
+            coords = _coords;
         }
+    }
+
+    class Face
+    {
+        public HalfEdge incidentEdge;
     }
 }
