@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    void Start()
-    {
-        CreateRooms();
-    }
-
     BSPLeaf root;
     [SerializeField] private int minLeafSize = 75;
     public int MinLeafSize { get => minLeafSize; }
@@ -19,12 +14,22 @@ public class DungeonGenerator : MonoBehaviour
     
     [HideInInspector] public List<BSPLeaf> leaves = new List<BSPLeaf>();
 
-    
-    
+    public int corridorWidth;
 
+    DCEL dcel;
+    void Start()
+    {
+        dcel = new DCEL();
+        CreateRooms();
+        
+    }
     void CreateRooms()
     {
         root = new BSPLeaf(0, 0, dungeonSize.x, dungeonSize.y, this);
+        //dcel.outerFace = DCEL.Face.CreateOuter(new Vector2Int(0, 0), dungeonSize);
+        //dcel.rootFace = DCEL.Face.Create(new Vector2Int(0, 0), dungeonSize);
+        //DCEL.Face.ConnectInnerOuterFace(dcel.outerFace, dcel.rootFace);
+
         leaves.Add(root);
 
         bool didSplit = true;
@@ -36,7 +41,7 @@ public class DungeonGenerator : MonoBehaviour
             {
                 if (leaves[i].leftChild == null && leaves[i].rightChild == null) //if this leaf is not already split
                 {
-                    if (leaves[i].Split())
+                    if (leaves[i].Split(leaves[i]))
                     {
                         //If we did split, add child leaves to list
                         leaves.Add(leaves[i].leftChild);
@@ -47,34 +52,21 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
         root.CreateRooms();
-        GameManager.Instance.SetRoomList(leaves);
+        GameManager.Instance.SetLeafList(leaves);
     }
 
-    class HalfEdge
-    {
-        public HalfEdge twin, next, prev;
-        public Vertex origin;
-        public Face incidentFace;
+    //public void CreateCorridors()
+    //{
+    //    for (int i = 0; i < leaves.Count; i++)
+    //    {
+    //        if (leaves[i].leftChild == null && leaves[i].rightChild == null) //if this leaf is at the lowest level
+    //        {
+                
+    //        }
+    //    }
 
-        public HalfEdge(Vertex _origin, Face _incidentFace)
-        {
-            origin = _origin;
-            incidentFace = _incidentFace;
-        }
-    }
+    //    // determine in which direction the adjacent room is
 
-    class Vertex
-    {
-        public Vector2Int coords;
-        public HalfEdge outgoingEdge;
-        public Vertex(Vector2Int _coords)
-        {
-            coords = _coords;
-        }
-    }
 
-    class Face
-    {
-        public HalfEdge incidentEdge;
-    }
+    //}
 }

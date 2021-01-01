@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
         get { return instance; }
     }
 
-    private List<BSPLeaf> roomList = new List<BSPLeaf>();
+    private List<BSPLeaf> leafList = new List<BSPLeaf>();
+    private List<Corridor> corridorList = new List<Corridor>();
+    private List<Room> roomList = new List<Room>();
 
     void Awake()
     {
@@ -19,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        foreach (BSPLeaf leaf in roomList)
+        foreach (BSPLeaf leaf in leafList)
         {
             //room corners
             Vector2 roomTopLeft = leaf.roomPos;
@@ -43,9 +45,28 @@ public class GameManager : MonoBehaviour
             Debug.DrawLine(leafTopLeft, leafBottomLeft, Color.gray);
             Debug.DrawLine(leafBottomLeft, leafBottomRight, Color.gray);
 
+            
+        }
+
+        foreach (Corridor c in corridorList)
+        {
+            //room corners
+            Vector2 corridorTopLeft = c.position;
+            Vector2 corridorTopRight = new Vector2(c.position.x + c.size.x, c.position.y);
+            Vector2 corridorBottomLeft = new Vector2(c.position.x, c.position.y + c.size.y);
+            Vector2 corridorBottomRight = c.position + c.size;
+
+
+            Debug.DrawLine(corridorTopLeft, corridorTopRight);
+            Debug.DrawLine(corridorTopRight, corridorBottomRight);
+            Debug.DrawLine(corridorTopLeft, corridorBottomLeft);
+            Debug.DrawLine(corridorBottomLeft, corridorBottomRight);
+
 
         }
     }
 
-    public void SetRoomList(List<BSPLeaf> _leaves) => roomList = _leaves;
+    public void SetLeafList(List<BSPLeaf> _leaves) => leafList = _leaves;
+    public void AddCorridor(Corridor _corridor) => corridorList.Add(_corridor);
+    public void AddRoom(Room _room) => roomList.Add(_room);
 }

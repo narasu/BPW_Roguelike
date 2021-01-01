@@ -263,6 +263,7 @@ MonoBehaviour:
   minLeafSize: 64
   minEdgeOffset: 3
   dungeonSize: {x: 400, y: 400}
+  corridorWidth: 5
 --- !u!1 &878174303
 GameObject:
   m_ObjectHideFlags: 0
