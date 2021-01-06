@@ -1,17 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
-public enum Cardinal { None, North, West, South, East }
 
 public class BSPLeaf
 {
     public int x, y, width, height;
-
+    private Vector2Int position;
     public bool hasCorridor;
     public bool hasRoom;
-    public Vector2Int roomSize;
-    public Vector2Int roomPos;
+    //public Vector2Int roomSize;
+    //public Vector2Int roomPos;
     private int minLeafSize;
     private int minEdgeOffset;
     private DungeonGenerator owner;
@@ -22,12 +21,13 @@ public class BSPLeaf
     public BSPLeaf rightChild;
     public Room room;
 
-    public Dictionary<Cardinal, Corridor> corridors = new Dictionary<Cardinal, Corridor>();
+    public List<Corridor> corridors = new List<Corridor>();
 
     public BSPLeaf(int _x, int _y, int _width, int _height, DungeonGenerator _owner)
     {
         x = _x;
         y = _y;
+        position = new Vector2Int(x, y);
         width = _width;
         height = _height;
         owner = _owner;
@@ -36,14 +36,13 @@ public class BSPLeaf
         //GameManager.Instance.leafList.Add(this);
     }
 
-    public bool Split(BSPLeaf _parent)
+    public bool Split()
     {
         // do not split if the leaf already has children
         if (leftChild !=null || rightChild != null)
         {
             return false;
         }
-        parent = _parent;
         // randomize split direction
         bool splitH = Random.Range(0f, 1f) > 0.5f;
 
@@ -80,6 +79,8 @@ public class BSPLeaf
             leftChild = new BSPLeaf(x, y, split, height, owner);
             rightChild = new BSPLeaf(x + split, y, width - split, height, owner);
         }
+        leftChild.parent = this;
+        rightChild.parent = this;
         leftChild.sibling = rightChild;
         rightChild.sibling = leftChild;
         //Debug.Log("Left child position: " + new Vector2Int(leftChild.x, leftChild.y) + " Right Child position: " + new Vector2Int(rightChild.x, rightChild.y));
@@ -104,35 +105,91 @@ public class BSPLeaf
         else
         {
 
-            roomSize = new Vector2Int(Random.Range(width / 2, width - minEdgeOffset * 2), Random.Range(height / 2, height - minEdgeOffset * 2));
-            roomPos = new Vector2Int(Random.Range(x + minEdgeOffset, x + (width - roomSize.x - minEdgeOffset)), Random.Range(y + minEdgeOffset, y + (height - roomSize.y - minEdgeOffset)));
+            Vector2Int roomSize = new Vector2Int(Random.Range(width / 2, width - minEdgeOffset * 2), Random.Range(height / 2, height - minEdgeOffset * 2));
+            Vector2Int roomPos = new Vector2Int(Random.Range(x + minEdgeOffset, x + (width - roomSize.x - minEdgeOffset)), Random.Range(y + minEdgeOffset, y + (height - roomSize.y - minEdgeOffset)));
             room = new Room(roomPos, roomSize);
             hasRoom = true;
-            CreateCorridors(this);
+            CreateCorridors(this, sibling);
         }
     }
-    public static void CreateCorridors(BSPLeaf _leaf) // call this method at the smallest subdivision
+    public static void CreateCorridors(BSPLeaf _leafA, BSPLeaf _leafB) // call this method at the smallest subdivision
     {
-        if (_leaf.sibling == null)
+        //if there is no parent then we're at root level, so return
+        if (_leafA.parent==null)
         {
             return;
         }
+        // if either leaf is null, return
+        if (_leafA == null || _leafB == null)
+        {
+            return;
+        }
+        
+        //if (RoomsAreConnected(_leafA, _leafB))
+        //{
+        //    return;
+        //}
 
-        BSPLeaf[] twinLeaves = { _leaf, _leaf.sibling };
+        
+        
+        
+        BSPLeaf[] twinLeaves = { _leafA, _leafB };
         Room[] twinRooms = new Room[2];
 
-        for (int i=0; i < twinLeaves.Length; i++)
+
+        for (int i = 0; i < twinLeaves.Length; i++)
         {
-            if (twinLeaves[i].room==null)
+            twinRooms[i] = twinLeaves[i].room;
+            // if one of the two leaves has no room
+            if (twinLeaves[i].room == null)
             {
-                return;
+                //return;
+
+                if (twinLeaves[i].leftChild == null || twinLeaves[i].rightChild == null)
+                {
+                    return;
+                }
+
+                // if one of the children has no room (i.e. has children of their own) return, since they'll be handled by another call
+                if (twinLeaves[i].leftChild.room == null || twinLeaves[i].rightChild.room == null)
+                {
+                    return;
+                }
+                //if children are connected, return
+                //if (RoomsAreConnected(twinLeaves[i].leftChild, twinLeaves[i].rightChild))
+                //{
+                //    return;
+                //}
+
+
+
                 //int n = Mathf.RoundToInt(Random.Range(0.0f, 1.0f));
-                
-                //if (twinLeaves[i].leftChild!=null)
-                //    twinLeaves[i] = twinLeaves[i].leftChild;
-                //else if(twinLeaves[i].rightChild != null)
-                //    twinLeaves[i] = twinLeaves[i].rightChild;
+                //if (n == 0)
+                //{
+                //    twinRooms[i] = twinLeaves[i].leftChild.room;
+                //    //twinLeaves[i] = twinLeaves[i].leftChild;
+                //    Debug.Log(twinLeaves[i].leftChild);
+                //}
+                //else
+                //{
+                //    twinRooms[i] = twinLeaves[i].rightChild.room;
+                //    //twinLeaves[i] = twinLeaves[i].rightChild;
+                //    Debug.Log(twinLeaves[i].rightChild);
+                //}
+
+                    // the smallest level of subdivision is connected now
+                    //right
+                    //so this if condition is met when we step up into a parent
+                    // here we want to check
+                    // if the child of either leaf has a room
+
+                    // then assign the child's room to roomA / roomB
+                    // ruling out any room that has an unfavorable position / size
+                    //return;
+
+
             }
+            //twinRooms[i] = twinLeaves[i].room;
         }
 
 
@@ -151,134 +208,122 @@ public class BSPLeaf
         int corridorX=0, corridorY=0, corridorLength=0;
         Vector2Int corridorPos = new Vector2Int(0,0), corridorSize = new Vector2Int(0, 0), exit1 = new Vector2Int(0, 0), exit2 = new Vector2Int(0, 0);
         
-        if (_leaf.sibling.y < _leaf.y)
+        if (twinLeaves[1].y < twinLeaves[0].y)
         {
-            //return if this side already has a corridor
-            if (_leaf.HasCorridor(Cardinal.South) || _leaf.sibling.HasCorridor(Cardinal.North))
-            {
-                return;
-            }
             // make sure the corridor stays within the edges of the two rooms
-            int Xmin = (_leaf.roomPos.x > _leaf.sibling.roomPos.x ? _leaf.roomPos.x : _leaf.sibling.roomPos.x);
-            int Xmax = (_leaf.roomPos.x + _leaf.roomSize.x > _leaf.sibling.roomPos.x + _leaf.sibling.roomSize.x ? _leaf.sibling.roomPos.x + _leaf.sibling.roomSize.x - _leaf.owner.corridorWidth : _leaf.roomPos.x + _leaf.roomSize.x - _leaf.owner.corridorWidth);
+            int Xmin = (twinRooms[0].position.x > twinRooms[1].position.x ? twinRooms[0].position.x : twinRooms[1].position.x);
+            int Xmax = (twinRooms[0].position.x + twinRooms[0].size.x > twinRooms[1].position.x + twinRooms[1].size.x ? twinRooms[1].position.x + twinRooms[1].size.x - twinLeaves[0].owner.corridorWidth : twinRooms[0].position.x + twinRooms[0].size.x - twinLeaves[0].owner.corridorWidth);
             
             //set corridor position and size
             corridorX = Random.Range(Xmin, Xmax);
-            corridorY = _leaf.sibling.roomPos.y + _leaf.sibling.roomSize.y;
-            corridorLength = _leaf.roomPos.y - (_leaf.sibling.roomPos.y + _leaf.sibling.roomSize.y);
+            corridorY = twinRooms[1].position.y + twinRooms[1].size.y;
+            corridorLength = twinRooms[0].position.y - (twinRooms[1].position.y + twinRooms[1].size.y);
             corridorPos = new Vector2Int(corridorX, corridorY);
-            corridorSize = new Vector2Int(_leaf.owner.corridorWidth, corridorLength);
+            corridorSize = new Vector2Int(twinLeaves[0].owner.corridorWidth, corridorLength);
 
             //create exits at both ends
-            exit1 = new Vector2Int(corridorX + _leaf.owner.corridorWidth / 2, corridorPos.y);
-            exit2 = new Vector2Int(corridorX + _leaf.owner.corridorWidth / 2, corridorPos.y + corridorSize.y);
+            exit1 = new Vector2Int(corridorX + twinLeaves[0].owner.corridorWidth / 2, corridorPos.y);
+            exit2 = new Vector2Int(corridorX + twinLeaves[0].owner.corridorWidth / 2, corridorPos.y + corridorSize.y);
             
             //create corridor and add to this and sibling
             Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
-            _leaf.corridors.Add(Cardinal.South, c);
-            _leaf.sibling.corridors.Add(Cardinal.North, c);
-            Debug.Log("down");
+            _leafA.parent.corridors.Add(c);
+            //Debug.Log("down");
 
             //move one level up in subdivision tree
-            //CreateCorridors(_leaf.parent);
+            Debug.Log(_leafA.parent);
+            CreateCorridors(_leafA.parent, _leafA.parent.sibling);
+            
             //return;
         }
-        else if (_leaf.sibling.y > _leaf.y)
+        else if (twinLeaves[1].y > twinLeaves[0].y)
         {
-            //return if this side already has a corridor
-            if (_leaf.HasCorridor(Cardinal.North) || _leaf.sibling.HasCorridor(Cardinal.South))
-            {
-                return;
-            }
+            
             // make sure the corridor stays within the edges of the two rooms
-            int Xmin = (_leaf.roomPos.x > _leaf.sibling.roomPos.x ? _leaf.roomPos.x : _leaf.sibling.roomPos.x);
-            int Xmax = (_leaf.roomPos.x + _leaf.roomSize.x > _leaf.sibling.roomPos.x + _leaf.sibling.roomSize.x ? _leaf.sibling.roomPos.x + _leaf.sibling.roomSize.x - _leaf.owner.corridorWidth : _leaf.roomPos.x + _leaf.roomSize.x - _leaf.owner.corridorWidth);
+            int Xmin = (twinRooms[0].position.x > twinRooms[1].position.x ? twinRooms[0].position.x : twinRooms[1].position.x);
+            int Xmax = (twinRooms[0].position.x + twinRooms[0].size.x > twinRooms[1].position.x + twinRooms[1].size.x ? twinRooms[1].position.x + twinRooms[1].size.x - twinLeaves[0].owner.corridorWidth : twinRooms[0].position.x + twinRooms[0].size.x - twinLeaves[0].owner.corridorWidth);
 
             //set corridor position and size
             corridorX = Random.Range(Xmin, Xmax);
-            corridorY = _leaf.roomPos.y + _leaf.roomSize.y;
-            corridorLength = _leaf.sibling.roomPos.y - (_leaf.roomPos.y + _leaf.roomSize.y);
-            Debug.Log("this: " + _leaf.roomPos + " leafB: " + _leaf.sibling.roomPos);
+            corridorY = twinRooms[0].position.y + twinRooms[0].size.y;
+            corridorLength = twinRooms[1].position.y - (twinRooms[0].position.y + twinRooms[0].size.y);
+            //Debug.Log("this: " + twinRooms[0].position + " leafB: " + twinRooms[1].position);
             corridorPos = new Vector2Int(corridorX, corridorY);
-            corridorSize = new Vector2Int(_leaf.owner.corridorWidth, corridorLength);
+            corridorSize = new Vector2Int(twinLeaves[0].owner.corridorWidth, corridorLength);
 
             //create exits at both ends
-            exit1 = new Vector2Int(corridorX + _leaf.owner.corridorWidth / 2, corridorPos.y);
-            exit2 = new Vector2Int(corridorX + _leaf.owner.corridorWidth / 2, corridorPos.y + corridorSize.y);
+            exit1 = new Vector2Int(corridorX + twinLeaves[0].owner.corridorWidth / 2, corridorPos.y);
+            exit2 = new Vector2Int(corridorX + twinLeaves[0].owner.corridorWidth / 2, corridorPos.y + corridorSize.y);
 
             //create corridor and add to this and sibling
             Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
-            _leaf.corridors.Add(Cardinal.North, c);
-            _leaf.sibling.corridors.Add(Cardinal.South, c);
-            Debug.Log("up");
+            //twinLeaves[0].corridors.Add(c);
+            //twinLeaves[1].corridors.Add(c);
+            _leafA.parent.corridors.Add(c);
+            //Debug.Log("up");
 
             //move one level up in subdivision tree
-            //CreateCorridors(_leaf.parent);
+            Debug.Log(_leafA.parent);
+            CreateCorridors(_leafA.parent, _leafA.parent.sibling);
             //return;
         }
-        else if (_leaf.sibling.x < _leaf.x)
+        else if (twinLeaves[1].x < twinLeaves[0].x)
         {
-            //return if this side already has a corridor
-            if (_leaf.HasCorridor(Cardinal.West) || _leaf.sibling.HasCorridor(Cardinal.East))
-            {
-                return;
-            }
             // make sure the corridor stays within the edges of the two rooms
-            int Ymin = (_leaf.roomPos.y > _leaf.sibling.roomPos.y ? _leaf.roomPos.y : _leaf.sibling.roomPos.y);
-            int Ymax = (_leaf.roomPos.y + _leaf.roomSize.y > _leaf.sibling.roomPos.y + _leaf.sibling.roomSize.y ? _leaf.sibling.roomPos.y + _leaf.sibling.roomSize.y - _leaf.owner.corridorWidth : _leaf.roomPos.y + _leaf.roomSize.y - _leaf.owner.corridorWidth);
+            int Ymin = (twinRooms[0].position.y > twinRooms[1].position.y ? twinRooms[0].position.y : twinRooms[1].position.y);
+            int Ymax = (twinRooms[0].position.y + twinRooms[0].size.y > twinRooms[1].position.y + twinRooms[1].size.y ? twinRooms[1].position.y + twinRooms[1].size.y - twinLeaves[0].owner.corridorWidth : twinRooms[0].position.y + twinRooms[0].size.y - twinLeaves[0].owner.corridorWidth);
             
             //set corridor position and size
-            corridorX = _leaf.sibling.roomPos.x + _leaf.sibling.roomSize.x;
+            corridorX = twinRooms[1].position.x + twinRooms[1].size.x;
             corridorY = Random.Range(Ymin, Ymax);
-            corridorLength = _leaf.roomPos.x - (_leaf.sibling.roomPos.x + _leaf.sibling.roomSize.x);
+            corridorLength = twinRooms[0].position.x - (twinRooms[1].position.x + twinRooms[1].size.x);
             corridorPos = new Vector2Int(corridorX, corridorY);
-            corridorSize = new Vector2Int( corridorLength, _leaf.owner.corridorWidth);
+            corridorSize = new Vector2Int( corridorLength, twinLeaves[0].owner.corridorWidth);
 
             // create exits
-            exit1 = new Vector2Int(corridorPos.x, corridorY + _leaf.owner.corridorWidth / 2);
-            exit2 = new Vector2Int(corridorPos.x + corridorSize.x, corridorY + _leaf.owner.corridorWidth / 2);
+            exit1 = new Vector2Int(corridorPos.x, corridorY + twinLeaves[0].owner.corridorWidth / 2);
+            exit2 = new Vector2Int(corridorPos.x + corridorSize.x, corridorY + twinLeaves[0].owner.corridorWidth / 2);
 
             //create corridor and add to this and sibling
             Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
-            _leaf.corridors.Add(Cardinal.West, c);
-            _leaf.sibling.corridors.Add(Cardinal.East, c);
-            Debug.Log("left");
+            //twinLeaves[0].corridors.Add(c);
+            //twinLeaves[1].corridors.Add(c);
+            _leafA.parent.corridors.Add(c);
+            //Debug.Log("left");
 
             //move one level up in the subdivision tree
-            //CreateCorridors(_leaf.parent);
+            Debug.Log(_leafA.parent);
+            CreateCorridors(_leafA.parent, _leafA.parent.sibling);
             //return;
         }
-        else if (_leaf.sibling.x > _leaf.x)
+        else if (twinLeaves[1].x > twinLeaves[0].x)
         {
-            //return if this side already has a corridor
-            if (_leaf.HasCorridor(Cardinal.East) || _leaf.sibling.HasCorridor(Cardinal.West))
-            {
-                return;
-            }
             // make sure the corridor stays within the edges of the two rooms
             
-            int Ymin = (_leaf.roomPos.y > _leaf.sibling.roomPos.y ? _leaf.roomPos.y : _leaf.sibling.roomPos.y);
-            int Ymax = (_leaf.roomPos.y + _leaf.roomSize.y > _leaf.sibling.roomPos.y + _leaf.sibling.roomSize.y ? _leaf.sibling.roomPos.y + _leaf.sibling.roomSize.y - _leaf.owner.corridorWidth : _leaf.roomPos.y + _leaf.roomSize.y - _leaf.owner.corridorWidth);
+            int Ymin = (twinRooms[0].position.y > twinRooms[1].position.y ? twinRooms[0].position.y : twinRooms[1].position.y);
+            int Ymax = (twinRooms[0].position.y + twinRooms[0].size.y > twinRooms[1].position.y + twinRooms[1].size.y ? twinRooms[1].position.y + twinRooms[1].size.y - twinLeaves[0].owner.corridorWidth : twinRooms[0].position.y + twinRooms[0].size.y - twinLeaves[0].owner.corridorWidth);
 
             //set corridor position and size
-            corridorX = _leaf.roomPos.x + _leaf.roomSize.x;
+            corridorX = twinRooms[0].position.x + twinRooms[0].size.x;
             corridorY = Random.Range(Ymin, Ymax);
-            corridorLength = _leaf.sibling.roomPos.x - (_leaf.roomPos.x + _leaf.roomSize.x);
+            corridorLength = twinRooms[1].position.x - (twinRooms[0].position.x + twinRooms[0].size.x);
             corridorPos = new Vector2Int(corridorX, corridorY);
-            corridorSize = new Vector2Int(corridorLength, _leaf.owner.corridorWidth);
+            corridorSize = new Vector2Int(corridorLength, twinLeaves[0].owner.corridorWidth);
 
             //create exits at the two ends
-            exit1 = new Vector2Int(corridorPos.x, corridorY + _leaf.owner.corridorWidth / 2);
-            exit2 = new Vector2Int(corridorPos.x + corridorSize.x, corridorY + _leaf.owner.corridorWidth / 2);
+            exit1 = new Vector2Int(corridorPos.x, corridorY + twinLeaves[0].owner.corridorWidth / 2);
+            exit2 = new Vector2Int(corridorPos.x + corridorSize.x, corridorY + twinLeaves[0].owner.corridorWidth / 2);
 
             //create corridor with above parameters and add to this and sibling
             Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
-            _leaf.corridors.Add(Cardinal.East, c);
-            _leaf.sibling.corridors.Add(Cardinal.West, c);
-            Debug.Log("right");
+            //twinLeaves[0].corridors.Add(c);
+            //twinLeaves[1].corridors.Add(c);
+            _leafA.parent.corridors.Add(c);
+            //Debug.Log("right");
 
             //move one level up in the subdivision tree
-            //CreateCorridors(_leaf.parent);
+            Debug.Log(_leafA.parent);
+            CreateCorridors(_leafA.parent, _leafA.parent.sibling);
             //return;
         }
 
@@ -293,13 +338,25 @@ public class BSPLeaf
         return false;
     }
 
-    public bool HasCorridor(Cardinal _direction)
+    public static bool RoomsAreConnected(BSPLeaf _leafA, BSPLeaf _leafB)
     {
-        if (corridors.ContainsKey(_direction))
+        // if the two leaves are already connected, return
+        var result = _leafA.corridors.Intersect(_leafB.corridors);
+        if (result.Count() > 0)
         {
+            Debug.Log("these corridors are already connected");
             return true;
         }
         return false;
     }
+
+    //public bool HasCorridor(Cardinal _direction)
+    //{
+    //    if (corridors.ContainsKey(_direction))
+    //    {
+    //        return true;
+    //    }
+    //    return false;
+    //}
 }
 

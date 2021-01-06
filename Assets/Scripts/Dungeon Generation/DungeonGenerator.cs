@@ -41,7 +41,7 @@ public class DungeonGenerator : MonoBehaviour
             {
                 if (leaves[i].leftChild == null && leaves[i].rightChild == null) //if this leaf is not already split
                 {
-                    if (leaves[i].Split(leaves[i]))
+                    if (leaves[i].Split())
                     {
                         //If we did split, add child leaves to list
                         leaves.Add(leaves[i].leftChild);

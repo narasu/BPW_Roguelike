@@ -23,11 +23,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (BSPLeaf leaf in leafList)
         {
-            //room corners
-            Vector2 roomTopLeft = leaf.roomPos;
-            Vector2 roomTopRight = new Vector2(leaf.roomPos.x + leaf.roomSize.x, leaf.roomPos.y);
-            Vector2 roomBottomLeft = new Vector2(leaf.roomPos.x, leaf.roomPos.y + leaf.roomSize.y);
-            Vector2 roomBottomRight = leaf.roomPos + leaf.roomSize;
+            
 
             // leaf corners
             Vector2 leafTopLeft = new Vector2(leaf.x, leaf.y);
@@ -35,10 +31,7 @@ public class GameManager : MonoBehaviour
             Vector2 leafBottomLeft = new Vector2(leaf.x, leaf.y + leaf.height);
             Vector2 leafBottomRight = new Vector2(leaf.x + leaf.width, leaf.y + leaf.height);
 
-            Debug.DrawLine(roomTopLeft, roomTopRight);
-            Debug.DrawLine(roomTopRight, roomBottomRight);
-            Debug.DrawLine(roomTopLeft, roomBottomLeft);
-            Debug.DrawLine(roomBottomLeft, roomBottomRight);
+            
 
             Debug.DrawLine(leafTopLeft, leafTopRight, Color.gray);
             Debug.DrawLine(leafTopRight, leafBottomRight, Color.gray);
@@ -46,6 +39,20 @@ public class GameManager : MonoBehaviour
             Debug.DrawLine(leafBottomLeft, leafBottomRight, Color.gray);
 
             
+        }
+
+        foreach(Room room in roomList)
+        {
+            //room corners
+            Vector2 roomBottomLeft = room.position;
+            Vector2 roomBottomRight = new Vector2(room.position.x + room.size.x, room.position.y);
+            Vector2 roomTopLeft = new Vector2(room.position.x, room.position.y + room.size.y);
+            Vector2 roomTopRight = room.position + room.size;
+
+            Debug.DrawLine(roomTopLeft, roomTopRight);
+            Debug.DrawLine(roomTopRight, roomBottomRight);
+            Debug.DrawLine(roomTopLeft, roomBottomLeft);
+            Debug.DrawLine(roomBottomLeft, roomBottomRight);
         }
 
         foreach (Corridor c in corridorList)

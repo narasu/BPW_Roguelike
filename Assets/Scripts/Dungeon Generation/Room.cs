@@ -6,7 +6,7 @@ public class Room
 {
     public Vector2Int size, position;
 
-    public Room(Vector2Int _size, Vector2Int _position)
+    public Room(Vector2Int _position, Vector2Int _size)
     {
         size = _size;
         position = _position;

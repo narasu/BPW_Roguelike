@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+public enum Cardinal { None, North, West, South, East }
 
 public class OldRoom
 {

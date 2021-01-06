@@ -5,6 +5,7 @@ using UnityEngine;
 public class Corridor
 {
     public Vector2Int position, size, exit1, exit2;
+    public Room roomA, roomB;
 
     public Corridor(Vector2Int _position, Vector2Int _size, Vector2Int _exit1, Vector2Int _exit2)
     {
