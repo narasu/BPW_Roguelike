@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     private List<BSPLeaf> leafList = new List<BSPLeaf>();
     private List<Corridor> corridorList = new List<Corridor>();
-    private List<Room> roomList = new List<Room>();
+    private List<OtherRoom> roomList = new List<OtherRoom>();
 
     void Awake()
     {
@@ -68,5 +68,5 @@ public class GameManager : MonoBehaviour
 
     public void SetLeafList(List<BSPLeaf> _leaves) => leafList = _leaves;
     public void AddCorridor(Corridor _corridor) => corridorList.Add(_corridor);
-    public void AddRoom(Room _room) => roomList.Add(_room);
+    public void AddRoom(OtherRoom _room) => roomList.Add(_room);
 }

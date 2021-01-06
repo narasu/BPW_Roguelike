@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Cardinal { None, North, West, South, East }
+
 
 public class BSPLeaf
 {
@@ -20,7 +20,7 @@ public class BSPLeaf
     public BSPLeaf sibling;
     public BSPLeaf leftChild;
     public BSPLeaf rightChild;
-    public Room room;
+    public OtherRoom room;
 
     public Dictionary<Cardinal, Corridor> corridors = new Dictionary<Cardinal, Corridor>();
 
@@ -106,7 +106,7 @@ public class BSPLeaf
 
             roomSize = new Vector2Int(Random.Range(width / 2, width - minEdgeOffset * 2), Random.Range(height / 2, height - minEdgeOffset * 2));
             roomPos = new Vector2Int(Random.Range(x + minEdgeOffset, x + (width - roomSize.x - minEdgeOffset)), Random.Range(y + minEdgeOffset, y + (height - roomSize.y - minEdgeOffset)));
-            room = new Room(roomPos, roomSize);
+            room = new OtherRoom(roomPos, roomSize);
             hasRoom = true;
             CreateCorridors(this);
         }
@@ -119,7 +119,7 @@ public class BSPLeaf
         }
 
         BSPLeaf[] twinLeaves = { _leaf, _leaf.sibling };
-        Room[] twinRooms = new Room[2];
+        OtherRoom[] twinRooms = new OtherRoom[2];
 
         for (int i=0; i < twinLeaves.Length; i++)
         {
