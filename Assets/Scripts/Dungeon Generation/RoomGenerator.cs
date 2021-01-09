@@ -12,12 +12,12 @@ public class RoomGenerator : MonoBehaviour
 
     [SerializeField] [Range(1, 25)] private int numberOfRooms;
 
-    private OldRoom[,] rooms;
-    private List<OldRoom> roomList;
+    private Room[,] rooms;
+    private List<Room> roomList;
 
-    private OldRoom startRoom;
-    private OldRoom endRoom;
-    private OldRoom bossRoom;
+    private Room startRoom;
+    private Room endRoom;
+    private Room bossRoom;
 
     private void Awake()
     {
@@ -32,34 +32,34 @@ public class RoomGenerator : MonoBehaviour
         PrintGrid();
     }
 
-    private OldRoom GenerateRooms()
+    private Room GenerateRooms()
     {
         int gridSize = numberOfRooms;
-        rooms = new OldRoom[gridSize, gridSize];
+        rooms = new Room[gridSize, gridSize];
 
         //create the first room on the middle coordinate in the grid
         Vector2Int firstCoordinate = new Vector2Int((gridSize / 2) - 1, (gridSize / 2) - 1);
         
         //queue new rooms
-        Queue<OldRoom> roomsToCreate = new Queue<OldRoom>();
-        roomsToCreate.Enqueue(new OldRoom(firstCoordinate.x, firstCoordinate.y));
+        Queue<Room> roomsToCreate = new Queue<Room>();
+        roomsToCreate.Enqueue(new Room(firstCoordinate.x, firstCoordinate.y));
         
         //add created rooms to list
-        List<OldRoom> createdRooms = new List<OldRoom>();
+        List<Room> createdRooms = new List<Room>();
         while (roomsToCreate.Count > 0 && createdRooms.Count < numberOfRooms)
         {
-            OldRoom currentRoom = roomsToCreate.Dequeue();
+            Room currentRoom = roomsToCreate.Dequeue();
             rooms[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y] = currentRoom;
             createdRooms.Add(currentRoom);
             AddNeighbors(currentRoom,roomsToCreate);
         }
 
-        foreach (OldRoom room in createdRooms)
+        foreach (Room room in createdRooms)
         {
             List<Vector2Int> neighborCoordinates = room.NeighborCoordinates();
             foreach(Vector2Int coordinate in neighborCoordinates)
             {
-                OldRoom neighbor = rooms[coordinate.x, coordinate.y];
+                Room neighbor = rooms[coordinate.x, coordinate.y];
                 if (neighbor!=null)
                 {
                     room.Connect(neighbor);
@@ -70,7 +70,7 @@ public class RoomGenerator : MonoBehaviour
         return rooms[firstCoordinate.x, firstCoordinate.y];
     }
 
-    private void AddNeighbors(OldRoom currentRoom, Queue<OldRoom> roomsToCreate)
+    private void AddNeighbors(Room currentRoom, Queue<Room> roomsToCreate)
     {
         List<Vector2Int> neighborCoordinates = currentRoom.NeighborCoordinates();
         List<Vector2Int> availableNeighbors = new List<Vector2Int>();
@@ -103,7 +103,7 @@ public class RoomGenerator : MonoBehaviour
                     roomFrac += 1f / availableNeighbors.Count;
                 }
             }
-            roomsToCreate.Enqueue(new OldRoom(chosenNeighbor));
+            roomsToCreate.Enqueue(new Room(chosenNeighbor));
             availableNeighbors.Remove(chosenNeighbor);
         }
     }

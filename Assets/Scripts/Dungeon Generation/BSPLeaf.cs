@@ -19,7 +19,7 @@ public class BSPLeaf
     public BSPLeaf sibling;
     public BSPLeaf leftChild;
     public BSPLeaf rightChild;
-    public Room room;
+    public OtherRoom room;
 
     public List<Corridor> corridors = new List<Corridor>();
 
