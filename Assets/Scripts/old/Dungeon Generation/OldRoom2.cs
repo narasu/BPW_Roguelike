@@ -12,6 +12,6 @@ public class OldRoom2
         size = _size;
         position = _position;
         neighbor = _neighbor;
-        GameManager.Instance.AddRoom(this);
+        OldGameManager.Instance.AddRoom(this);
     }
 }

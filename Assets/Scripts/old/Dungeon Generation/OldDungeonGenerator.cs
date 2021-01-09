@@ -52,7 +52,7 @@ public class OldDungeonGenerator : MonoBehaviour
             }
         }
         root.CreateRooms();
-        GameManager.Instance.SetLeafList(leaves);
+        OldGameManager.Instance.SetLeafList(leaves);
     }
 
     //public void CreateCorridors()

@@ -13,6 +13,6 @@ public class OldCorridor
         size = _size;
         exit1 = _exit1;
         exit2 = _exit2;
-        GameManager.Instance.AddCorridor(this);
+        OldGameManager.Instance.AddCorridor(this);
     }
 }
