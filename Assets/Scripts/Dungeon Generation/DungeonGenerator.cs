@@ -26,9 +26,9 @@ public class DungeonGenerator : MonoBehaviour
     void CreateRooms()
     {
         root = new BSPLeaf(0, 0, dungeonSize.x, dungeonSize.y, this);
-        //dcel.outerFace = DCEL.Face.CreateOuter(new Vector2Int(0, 0), dungeonSize);
-        //dcel.rootFace = DCEL.Face.Create(new Vector2Int(0, 0), dungeonSize);
-        //DCEL.Face.ConnectInnerOuterFace(dcel.outerFace, dcel.rootFace);
+        dcel.outerFace = new DCEL.Face(new Vector2Int(0, 0), dungeonSize,true);
+        dcel.rootFace = new DCEL.Face(new Vector2Int(0, 0), dungeonSize);
+        DCEL.Face.ConnectInnerOuterFace(dcel.outerFace, dcel.rootFace);
 
         leaves.Add(root);
 

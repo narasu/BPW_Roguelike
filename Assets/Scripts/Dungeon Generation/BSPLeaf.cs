@@ -9,8 +9,7 @@ public class BSPLeaf
     private Vector2Int position;
     public bool hasCorridor;
     public bool hasRoom;
-    //public Vector2Int roomSize;
-    //public Vector2Int roomPos;
+    
     private int minLeafSize;
     private int minEdgeOffset;
     private DungeonGenerator owner;
@@ -107,7 +106,7 @@ public class BSPLeaf
 
             Vector2Int roomSize = new Vector2Int(Random.Range(width / 2, width - minEdgeOffset * 2), Random.Range(height / 2, height - minEdgeOffset * 2));
             Vector2Int roomPos = new Vector2Int(Random.Range(x + minEdgeOffset, x + (width - roomSize.x - minEdgeOffset)), Random.Range(y + minEdgeOffset, y + (height - roomSize.y - minEdgeOffset)));
-            room = new Room(roomPos, roomSize);
+            room = new Room(roomPos, roomSize, sibling.room);
             hasRoom = true;
             CreateCorridors(this, sibling);
         }
@@ -125,17 +124,9 @@ public class BSPLeaf
             return;
         }
         
-        //if (RoomsAreConnected(_leafA, _leafB))
-        //{
-        //    return;
-        //}
-
-        
-        
         
         BSPLeaf[] twinLeaves = { _leafA, _leafB };
         Room[] twinRooms = new Room[2];
-
 
         for (int i = 0; i < twinLeaves.Length; i++)
         {
@@ -163,29 +154,29 @@ public class BSPLeaf
 
 
 
-                //int n = Mathf.RoundToInt(Random.Range(0.0f, 1.0f));
-                //if (n == 0)
-                //{
-                //    twinRooms[i] = twinLeaves[i].leftChild.room;
-                //    //twinLeaves[i] = twinLeaves[i].leftChild;
-                //    Debug.Log(twinLeaves[i].leftChild);
-                //}
-                //else
-                //{
-                //    twinRooms[i] = twinLeaves[i].rightChild.room;
-                //    //twinLeaves[i] = twinLeaves[i].rightChild;
-                //    Debug.Log(twinLeaves[i].rightChild);
-                //}
+                int n = Mathf.RoundToInt(Random.Range(0.0f, 1.0f));
+                if (n == 0)
+                {
+                    twinRooms[i] = twinLeaves[i].leftChild.room;
+                    //twinLeaves[i] = twinLeaves[i].leftChild;
+                    Debug.Log(twinLeaves[i].leftChild);
+                }
+                else
+                {
+                    twinRooms[i] = twinLeaves[i].rightChild.room;
+                    //twinLeaves[i] = twinLeaves[i].rightChild;
+                    Debug.Log(twinLeaves[i].rightChild);
+                }
 
-                    // the smallest level of subdivision is connected now
-                    //right
-                    //so this if condition is met when we step up into a parent
-                    // here we want to check
-                    // if the child of either leaf has a room
+                // the smallest level of subdivision is connected now
+                //right
+                //so this if condition is met when we step up into a parent
+                // here we want to check
+                // if the child of either leaf has a room
 
-                    // then assign the child's room to roomA / roomB
-                    // ruling out any room that has an unfavorable position / size
-                    //return;
+                // then assign the child's room to roomA / roomB
+                // ruling out any room that has an unfavorable position / size
+                //return;
 
 
             }
