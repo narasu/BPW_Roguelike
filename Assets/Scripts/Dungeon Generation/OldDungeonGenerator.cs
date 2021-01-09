@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DungeonGenerator : MonoBehaviour
+public class OldDungeonGenerator : MonoBehaviour
 {
     BSPLeaf root;
     [SerializeField] private int minLeafSize = 75;

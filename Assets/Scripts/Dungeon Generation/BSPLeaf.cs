@@ -12,17 +12,17 @@ public class BSPLeaf
     
     private int minLeafSize;
     private int minEdgeOffset;
-    private DungeonGenerator owner;
+    private OldDungeonGenerator owner;
 
     public BSPLeaf parent;
     public BSPLeaf sibling;
     public BSPLeaf leftChild;
     public BSPLeaf rightChild;
-    public Room room;
+    public OldRoom2 room;
 
-    public List<Corridor> corridors = new List<Corridor>();
+    public List<OldCorridor> corridors = new List<OldCorridor>();
 
-    public BSPLeaf(int _x, int _y, int _width, int _height, DungeonGenerator _owner)
+    public BSPLeaf(int _x, int _y, int _width, int _height, OldDungeonGenerator _owner)
     {
         x = _x;
         y = _y;
@@ -106,7 +106,7 @@ public class BSPLeaf
 
             Vector2Int roomSize = new Vector2Int(Random.Range(width / 2, width - minEdgeOffset * 2), Random.Range(height / 2, height - minEdgeOffset * 2));
             Vector2Int roomPos = new Vector2Int(Random.Range(x + minEdgeOffset, x + (width - roomSize.x - minEdgeOffset)), Random.Range(y + minEdgeOffset, y + (height - roomSize.y - minEdgeOffset)));
-            room = new Room(roomPos, roomSize, sibling.room);
+            room = new OldRoom2(roomPos, roomSize, sibling.room);
             hasRoom = true;
             CreateCorridors(this, sibling);
         }
@@ -126,7 +126,7 @@ public class BSPLeaf
         
         
         BSPLeaf[] twinLeaves = { _leafA, _leafB };
-        Room[] twinRooms = new Room[2];
+        OldRoom2[] twinRooms = new OldRoom2[2];
 
         for (int i = 0; i < twinLeaves.Length; i++)
         {
@@ -217,7 +217,7 @@ public class BSPLeaf
             exit2 = new Vector2Int(corridorX + twinLeaves[0].owner.corridorWidth / 2, corridorPos.y + corridorSize.y);
             
             //create corridor and add to this and sibling
-            Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
+            OldCorridor c = new OldCorridor(corridorPos, corridorSize, exit1, exit2);
             _leafA.parent.corridors.Add(c);
             //Debug.Log("down");
 
@@ -247,7 +247,7 @@ public class BSPLeaf
             exit2 = new Vector2Int(corridorX + twinLeaves[0].owner.corridorWidth / 2, corridorPos.y + corridorSize.y);
 
             //create corridor and add to this and sibling
-            Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
+            OldCorridor c = new OldCorridor(corridorPos, corridorSize, exit1, exit2);
             //twinLeaves[0].corridors.Add(c);
             //twinLeaves[1].corridors.Add(c);
             _leafA.parent.corridors.Add(c);
@@ -276,7 +276,7 @@ public class BSPLeaf
             exit2 = new Vector2Int(corridorPos.x + corridorSize.x, corridorY + twinLeaves[0].owner.corridorWidth / 2);
 
             //create corridor and add to this and sibling
-            Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
+            OldCorridor c = new OldCorridor(corridorPos, corridorSize, exit1, exit2);
             //twinLeaves[0].corridors.Add(c);
             //twinLeaves[1].corridors.Add(c);
             _leafA.parent.corridors.Add(c);
@@ -306,7 +306,7 @@ public class BSPLeaf
             exit2 = new Vector2Int(corridorPos.x + corridorSize.x, corridorY + twinLeaves[0].owner.corridorWidth / 2);
 
             //create corridor with above parameters and add to this and sibling
-            Corridor c = new Corridor(corridorPos, corridorSize, exit1, exit2);
+            OldCorridor c = new OldCorridor(corridorPos, corridorSize, exit1, exit2);
             //twinLeaves[0].corridors.Add(c);
             //twinLeaves[1].corridors.Add(c);
             _leafA.parent.corridors.Add(c);
