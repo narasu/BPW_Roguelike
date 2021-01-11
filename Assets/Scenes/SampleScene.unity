@@ -308,7 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed913bac184dbb04aa2790faa91d35f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfRooms: 21
+  numberOfRooms: 3
   startingRoom: {fileID: 483174103}
   roomSize: {x: 10, y: 10}
   northRooms:
