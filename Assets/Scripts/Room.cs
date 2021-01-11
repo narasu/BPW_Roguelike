@@ -16,17 +16,19 @@ public class Room : MonoBehaviour
 
     public void Initialize(Compass _origin, Vector2Int _roomCoordinate)
     {
-        SetNeighborCoordinates();
+        
         origin = _origin;
         roomCoordinate = _roomCoordinate;
+        SetNeighborCoordinates();
 
-        for(int i=0; i<openingDirections.Count; i++)
+        for (int i=0; i<openingDirections.Count; i++)
         {
             if (openingDirections[i] != origin)
             {
                 destination = openingDirections[i];
             }
         }
+        Debug.Log(destination);
     }
 
     public void SetNeighborCoordinates()
@@ -66,6 +68,15 @@ public class Room : MonoBehaviour
         destination = _direction;
         return true;
     }    
+
+    public bool IsConnected()
+    {
+        if (neighbors.ContainsKey(destination))
+        {
+            return true;
+        }
+        return false;
+    }
 
     public void Connect(Room _neighbor)
     {

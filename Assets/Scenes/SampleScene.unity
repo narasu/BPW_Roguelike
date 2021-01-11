@@ -308,9 +308,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed913bac184dbb04aa2790faa91d35f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfRooms: 3
+  numberOfRooms: 15
   startingRoom: {fileID: 483174103}
   roomSize: {x: 10, y: 10}
+  seed: 34
   northRooms:
   - {fileID: 5079385140155740655, guid: 5bdb77911d279f643a967e4634230faa, type: 3}
   - {fileID: 879123927304523139, guid: f35b682e752904345baec8f9faa060a9, type: 3}
