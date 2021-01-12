@@ -99,6 +99,7 @@ public class RoomGenerator : MonoBehaviour
                     {
                         Debug.Log("all spaces are occupied");
                         break;
+                        
                     }
 
                     // keep replacing the current room until there is a valid exit
@@ -108,7 +109,7 @@ public class RoomGenerator : MonoBehaviour
                         replacementRoom.GetComponent<Room>().Initialize(Compass.N, currentRoom.roomCoordinate);
                         roomGrid[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y] = replacementRoom;
                         Destroy(currentRoom.gameObject);
-                        yield return new WaitForSeconds(0.05f);
+                        yield return new WaitForEndOfFrame();
                         currentRoom = replacementRoom.GetComponent<Room>();
                     }
                     else if (currentRoom.origin == Compass.S)
@@ -117,7 +118,7 @@ public class RoomGenerator : MonoBehaviour
                         replacementRoom.GetComponent<Room>().Initialize(Compass.S, currentRoom.roomCoordinate);
                         roomGrid[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y] = replacementRoom;
                         Destroy(currentRoom.gameObject);
-                        yield return new WaitForSeconds(0.05f);
+                        yield return new WaitForEndOfFrame();
                         currentRoom = replacementRoom.GetComponent<Room>();
                     }
                     else if (currentRoom.origin == Compass.W)
@@ -126,7 +127,7 @@ public class RoomGenerator : MonoBehaviour
                         replacementRoom.GetComponent<Room>().Initialize(Compass.W, currentRoom.roomCoordinate);
                         roomGrid[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y] = replacementRoom;
                         Destroy(currentRoom.gameObject);
-                        yield return new WaitForSeconds(0.05f);
+                        yield return new WaitForEndOfFrame();
                         currentRoom = replacementRoom.GetComponent<Room>();
                     }
                     else if (currentRoom.origin == Compass.E)
@@ -135,7 +136,7 @@ public class RoomGenerator : MonoBehaviour
                         replacementRoom.GetComponent<Room>().Initialize(Compass.E, currentRoom.roomCoordinate);
                         roomGrid[currentRoom.roomCoordinate.x, currentRoom.roomCoordinate.y] = replacementRoom;
                         Destroy(currentRoom.gameObject);
-                        yield return new WaitForSeconds(0.05f);
+                        yield return new WaitForEndOfFrame();
                         currentRoom = replacementRoom.GetComponent<Room>();
                     }
                 }
@@ -215,7 +216,7 @@ public class RoomGenerator : MonoBehaviour
             }
 
             i++;
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForEndOfFrame();
         }
         Debug.Log(spawnedRooms.Count);
 
@@ -253,7 +254,7 @@ public class RoomGenerator : MonoBehaviour
         //    }
         //}
 
-        //yield return new WaitForSeconds(0.05f);
+        //yield return new WaitForEndOfFrame();
 
         //if (currentRoom.spawned)
         //    return;
@@ -302,7 +303,7 @@ public class RoomGenerator : MonoBehaviour
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
                 Destroy(oldRoom);
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForEndOfFrame();
                 continue;
             }
             else if (spawnedRooms[i].origin == Compass.S)
@@ -313,7 +314,7 @@ public class RoomGenerator : MonoBehaviour
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
                 Destroy(oldRoom);
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForEndOfFrame();
                 continue;
             }
             else if (spawnedRooms[i].origin == Compass.W)
@@ -324,7 +325,7 @@ public class RoomGenerator : MonoBehaviour
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
                 Destroy(oldRoom);
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForEndOfFrame();
                 continue;
             }
             else if (spawnedRooms[i].origin == Compass.E)
@@ -335,7 +336,7 @@ public class RoomGenerator : MonoBehaviour
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
                 Destroy(oldRoom);
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForEndOfFrame();
                 continue;
             }
         }
