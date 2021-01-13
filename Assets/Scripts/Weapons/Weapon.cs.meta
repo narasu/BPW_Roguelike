@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 31767adb42aeff1488bd0632fe9dc288
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - muzzleFlash: {fileID: 4283086732811903254, guid: ba7edd5fc695f4149add3293a36eafa7,
+      type: 3}
+  - firePoint: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
