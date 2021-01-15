@@ -61,10 +61,8 @@ public class Weapon : MonoBehaviour, IWeapon
 
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right);
-        if (hit.collider != null)
-        {
-            hit.collider.GetComponent<IDamageable>()?.TakeDamage(damage);
-        }
+        hit.collider?.GetComponent<IDamageable>()?.TakeDamage(damage);
+
         CanFire = false;
         
     }

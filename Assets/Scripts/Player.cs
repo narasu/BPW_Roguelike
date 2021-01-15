@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
         float angle = AngleBetweenTwoPoints(transform.position, targetPosition);
         transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
         
-        //returns angle in degrees between two points
+        //returns angle in degrees between two points in world space
         float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
         {
             return Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg;

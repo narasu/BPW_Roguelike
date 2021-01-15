@@ -6,8 +6,6 @@ public class MuzzleFlash : MonoBehaviour
 {
     [SerializeField] private float lifetime;
     
-
-    // Update is called once per frame
     void Update()
     {
         lifetime -= Time.deltaTime;

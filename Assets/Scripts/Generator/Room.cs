@@ -79,45 +79,72 @@ public class Room : MonoBehaviour
         
         if (_neighbor.roomCoordinate.y > roomCoordinate.y)
         {
-            if (IsOpen(Compass.N))
-            {
+            //if (IsOpen(Compass.N))
+            //{
                 neighbors.Add(Compass.N, _neighbor);
                 _neighbor.neighbors.Add(Compass.S, this);
-            }
-                
+            //}
             return;
         }
         if (_neighbor.roomCoordinate.x > roomCoordinate.x)
         {
-            if (IsOpen(Compass.E))
-            {
+            //if (IsOpen(Compass.E))
+            //{
                 neighbors.Add(Compass.E, _neighbor);
                 _neighbor.neighbors.Add(Compass.W, this);
-            }
+            //}
                 
             return;
         }
         if (_neighbor.roomCoordinate.y < roomCoordinate.y)
         {
-            if (IsOpen(Compass.S))
-            {
+            //if (IsOpen(Compass.S))
+            //{
                 neighbors.Add(Compass.S, _neighbor);
                 _neighbor.neighbors.Add(Compass.N, this);
-            }
+            //}
                 
             return;
         }
         if (_neighbor.roomCoordinate.x < roomCoordinate.x)
         {
-            if (IsOpen(Compass.W))
-            {
+            //if (IsOpen(Compass.W))
+            //{
                 neighbors.Add(Compass.W, _neighbor);
                 _neighbor.neighbors.Add(Compass.E, this);
-            }
+            //}
                 
             return;
         }
 
+    }
+
+    public int CountDistanceFromStart()
+    {
+        int i = 0;
+        //Debug.Log(origin);
+        //Debug.Log("dafucc");
+        //Debug.Log(neighbors.Count);
+        //foreach (KeyValuePair<Compass, Room> kvp in neighbors)
+        //{
+        //    Debug.Log(kvp.Key);
+        //}
+        //Debug.Log(neighbors);
+
+
+        Room r = this;
+        //as long as currently referenced room is not the starting room
+        while (r.origin != Compass.C)
+        {
+            if (r.neighbors.ContainsKey(r.origin))
+            {
+                //step into room's originating neighbor and count up
+                r = r.neighbors[r.origin];
+                i++;
+            }
+            
+        }
+        return i;
     }
 
 }
