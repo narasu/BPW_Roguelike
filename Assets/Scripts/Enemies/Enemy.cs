@@ -2,22 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Enemy : MonoBehaviour, IDamageable
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] protected int health;
+
+    protected Transform player;
+
+    protected virtual void Awake()
     {
-        
+        player = Player.Instance.gameObject.transform;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void Die()
     {
-        
+        Destroy(gameObject);
+        // spawn ammo/health
     }
-
-    public void TakeDamage(int _damage)
+    public virtual void TakeDamage(int _damage)
     {
         Debug.Log(gameObject + " took " + _damage + " damage");
+
+        health -= _damage;
+
+        if (health<=0)
+        {
+            Die();
+        }
     }
 }

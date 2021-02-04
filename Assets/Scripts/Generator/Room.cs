@@ -12,13 +12,13 @@ public class Room : MonoBehaviour
     public Compass destination = Compass.C;
     public List<Compass> openingDirections;
     public Dictionary<Compass, Room> neighbors = new Dictionary<Compass, Room>();
-    public Dictionary<Compass, Vector2Int> adjacentCoords = new Dictionary<Compass, Vector2Int>();
+    //public Dictionary<Compass, Vector2Int> adjacentCoords = new Dictionary<Compass, Vector2Int>();
 
     public void Initialize(Compass _origin, Vector2Int _roomCoordinate)
     {
         origin = _origin;
         roomCoordinate = _roomCoordinate;
-        SetNeighborCoordinates();
+        //SetNeighborCoordinates();
 
         for (int i=0; i<openingDirections.Count; i++)
         {
@@ -30,13 +30,13 @@ public class Room : MonoBehaviour
         //Debug.Log(destination);
     }
 
-    public void SetNeighborCoordinates()
-    {
-        adjacentCoords[Compass.N] = roomCoordinate + Vector2Int.up;
-        adjacentCoords[Compass.E] = roomCoordinate + Vector2Int.right;
-        adjacentCoords[Compass.S] = roomCoordinate + Vector2Int.down;
-        adjacentCoords[Compass.W] = roomCoordinate + Vector2Int.left;
-    }
+    //public void SetNeighborCoordinates()
+    //{
+    //    adjacentCoords[Compass.N] = roomCoordinate + Vector2Int.up;
+    //    adjacentCoords[Compass.E] = roomCoordinate + Vector2Int.right;
+    //    adjacentCoords[Compass.S] = roomCoordinate + Vector2Int.down;
+    //    adjacentCoords[Compass.W] = roomCoordinate + Vector2Int.left;
+    //}
 
     //does this room have an opening, and an empty space at the given direction?
     public bool IsOpen(Compass _direction)

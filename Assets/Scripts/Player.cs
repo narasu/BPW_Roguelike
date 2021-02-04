@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
     [SerializeField] private float movementSpeed;
@@ -9,9 +10,17 @@ public class Player : MonoBehaviour
 
     public Weapon activeWeapon;
 
+    private static Player instance;
+    public static Player Instance
+    { 
+        get { return instance; }
+    }
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        instance = this;
     }
 
     private void Update()
