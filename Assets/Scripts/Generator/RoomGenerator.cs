@@ -121,7 +121,7 @@ public class RoomGenerator : MonoBehaviour
                 opposite = Compass.S;
                 nextPlace = currentRoom.roomCoordinate + Vector2Int.up;
                 nextTransform = new Vector2(currentRoom.transform.position.x, currentRoom.transform.position.y + roomSize.y);
-                roomArray = southRooms;
+                roomArray = southRooms; 
                 break;
             case Compass.E:
                 opposite = Compass.W;
@@ -279,16 +279,6 @@ public class RoomGenerator : MonoBehaviour
 
     private void SpawnEncounters()
     {
-
-
-        //foreach (Room room in spawnedRooms)
-        //{
-
-        //    Debug.Log(room + "" + room.IsConnected());
-        //}
-
-        //Debug.Log("Distance: " + spawnedRooms[spawnedRooms.Count - 1].CountDistanceFromStart());
-
         for (int i=1; i<spawnedRooms.Count; i++)
         {
             //if (spawnedRooms[i] == null)

@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/contentModel.xml
+/.idea.BPW_Roguelike.iml
+/projectSettingsUpdater.xml
+# Datasource local storage ignored files
+/../../../../../../:\Unity\BPW_Roguelike\.idea\.idea.BPW_Roguelike\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
