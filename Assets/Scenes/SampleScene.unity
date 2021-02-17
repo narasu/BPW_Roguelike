@@ -377,124 +377,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &434954638
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 434954640}
-  - component: {fileID: 434954639}
-  m_Layer: 0
-  m_Name: A*
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &434954639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 434954638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  data:
-    dataString: UEsDBBQAAAgIAAAIIexE/TJhSwIAAPEEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzk3GQIGkt5YQ0gNJJrSTiy+LtcYaZMmjjwDJ8N+7km3s0MnJ8r63u++t1v5gQtkKM6fN0gi+0hzZjwELZ/Zt0IEPeICtVmvxji3nVXBXBBJEzgs4oSk+DGlWl+iMyH6qrQzkhIJeiVybcsG3ONfWWQrnIC0SZLQL2YpCHwN2oMfVbUg50mk0C6d3Ot0mgxMdM1QOTUdtiS2tZnmVSSgr5EFyR55NGvZsEmmKzDSM5HoUwExLKWwjhrljFc2+wDFY5QLIWOwefBYotoULIvuJT3lu0TWKDBzvhKH51BXZL10PrQS7q2W9gfShx2Q4ipLqoqv/8KthhHOjy4e27zAJPVwhsh0pzMC63lT74bvPwr3ag9zBRuJrgepRL432ihPojA+p3uLorns9W5sXmO26eC31Iuirr+8meDhF94e5FOWmgeh1LXWc9Pj6OwXQ0L38Jr1xLWwzYYoGEX8t/oFtf38a4F4Y6whqTKqgbqO9CVS2iCMLZryba6PQ9CtUqEC64zPVcZdXeIF9nXUP4VNpujdY+wVcpMRwx0+SC+hZ78+XZQu9X6EtnryTQmE36QA80qDmWql6w/qW2rS1NzlkvbStF/zzajHALLkZjycJwniKsLm6Saa3mylwOm+m+WTC4u4JRT5BPtdCm/HQvamuuKI9a/8gg6WBKm47N7BfivdS244pVK7XmUFUT3WFs3A01IQ+Sr7ggga0RueEihfOPlImdbZDnp4LpdHp4uAMpF2VlFXiTbsQSdk8/jJSdmKnf1BLAwQUAAAICAAACCHsKNeI62wAAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNVRUEovSizIKAaKGII4pZkpIHa0UmJqsoGFsbGpQWqisVlqYpKuhYGZZZJZYgqQnWSWZmqqFAtUX1JZkOqXmJsK0ROQWJKRlpmXkpmXrudelJniDjJaKbYWAFBLAQItABQAAAgIAAAIIexE/TJhSwIAAPEEAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAIIewo14jrbAAAAHgAAAAJACQAAAAAAAAAAAAAAJgCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAATwMAAAAA
-    upgradeData: 
-    file_cachedStartup: {fileID: 0}
-    data_cachedStartup: 
-    cacheStartup: 0
-  showNavGraphs: 1
-  showUnwalkableNodes: 1
-  debugMode: 0
-  debugFloor: 0
-  debugRoof: 1
-  manualDebugFloorRoof: 0
-  showSearchTree: 0
-  unwalkableNodeDebugSize: 0.3
-  logPathResults: 1
-  maxNearestNodeDistance: 100
-  scanOnStartup: 1
-  fullGetNearestSearch: 0
-  prioritizeGraphs: 0
-  prioritizeGraphsLimit: 1
-  colorSettings:
-    _SolidColor: {r: 0.11764706, g: 0.4, b: 0.7882353, a: 0.9}
-    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.5}
-    _BoundsHandles: {r: 0.29, g: 0.454, b: 0.741, a: 0.9}
-    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 0.5}
-    _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
-    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
-    _AreaColors:
-    - {r: 0, g: 0, b: 0, a: 0}
-  tagNames:
-  - Basic Ground
-  - 1
-  - 2
-  - 3
-  - 4
-  - 5
-  - 6
-  - 7
-  - 8
-  - 9
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14
-  - 15
-  - 16
-  - 17
-  - 18
-  - 19
-  - 20
-  - 21
-  - 22
-  - 23
-  - 24
-  - 25
-  - 26
-  - 27
-  - 28
-  - 29
-  - 30
-  - 31
-  heuristic: 2
-  heuristicScale: 1
-  threadCount: 1
-  maxFrameTime: 10
-  batchGraphUpdates: 0
-  graphUpdateBatchingInterval: 0.2
-  euclideanEmbedding:
-    mode: 0
-    seed: 0
-    pivotPointRoot: {fileID: 0}
-    spreadOutCount: 1
-  showGraphs: 1
---- !u!4 &434954640
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 434954638}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &438181707
 GameObject:
   m_ObjectHideFlags: 3
@@ -742,8 +624,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useSeed: 1
-  seed: 2147483647
-  numberOfRooms: 21
+  seed: 1
+  numberOfRooms: 5
   roomSize: {x: 9, y: 9}
   startingRoom: {fileID: 483174103}
   northRooms:

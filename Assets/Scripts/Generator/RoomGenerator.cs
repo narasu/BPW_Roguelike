@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 
 public class RoomGenerator : MonoBehaviour
 {
@@ -305,7 +304,6 @@ public class RoomGenerator : MonoBehaviour
             Instantiate(encounters[Random.Range(0, encounters.Length)],spawnedRooms[i].transform.position, Quaternion.Euler(rotation));
         }
 
-        AstarPath.active.Scan();
     }
 
     private Dictionary<Compass, Vector2Int> GetAdjacentCoords(Vector2Int _coord)
