@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private float movementSpeed;
-    private Rigidbody2D rb;
+    private Rigidbody rb;
 
     public Weapon activeWeapon;
 
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
         instance = this;
     }
 
@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            activeWeapon.GetComponent<IWeapon>()?.Shoot();
+            //activeWeapon.GetComponent<IWeapon>()?.Shoot();
         }
     }
 
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        Vector3 movementDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
+        Vector3 movementDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
         Vector3 movement = movementDirection * movementSpeed;
 
@@ -55,12 +55,12 @@ public class Player : MonoBehaviour
 
         //determine the angle between player and mouse
         float angle = AngleBetweenTwoPoints(transform.position, targetPosition);
-        transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, angle, 0f));
         
         //returns angle in degrees between two points in world space
         float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
         {
-            return Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg;
+            return Mathf.Atan2(a.z-b.z, b.x - a.x) * Mathf.Rad2Deg;
         }
     }
 
