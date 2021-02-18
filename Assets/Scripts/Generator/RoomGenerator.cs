@@ -16,6 +16,15 @@ public class RoomGenerator : MonoBehaviour
             return instance; 
         }
     }
+    [Header("Generation parameters")]
+    public bool UseSeed;
+    public int Seed;
+    [SerializeField] [Range(5, 50)] private int numberOfRooms;
+    public Vector2 roomSize;
+    [Header("Room Prefabs")]
+    [SerializeField] private GameObject startingRoom;
+    [SerializeField] private GameObject[] northRooms, southRooms, westRooms, eastRooms;
+    [SerializeField] private GameObject[] encounters;
 
     private GameObject bossRoom;
     private GameObject[,] roomGrid;
@@ -32,37 +41,22 @@ public class RoomGenerator : MonoBehaviour
                 //{
                 //    Debug.Log(spawnedRooms[i]);
                 //}
-                SpawnEncounters();
-
-
+                //SpawnEncounters();
                 roomsSpawned = value;
-
             }
         }
     }
 
-    [Header("Generation parameters")]
-    public bool useSeed;
-    public int seed;
-    [SerializeField] [Range(5, 50)] private int numberOfRooms;
-    public Vector2 roomSize;
-
-    [Header("Room Prefabs")]
-    [SerializeField] private GameObject startingRoom;
-    [SerializeField] private GameObject[] northRooms, southRooms, westRooms, eastRooms;
-    [SerializeField] private GameObject[] encounters;
     private void Awake()
     {
         instance = this;
-
-        if (useSeed) Random.InitState(seed);
-
-
+        if (UseSeed)
+        {
+            Random.InitState(Seed);
+        }
         roomGrid = new GameObject[numberOfRooms, numberOfRooms];
         roomGrid[numberOfRooms / 2, numberOfRooms / 2] = startingRoom;
-
         currentRoom = startingRoom.GetComponent<Room>();
-
         currentRoom.Initialize(Compass.C, new Vector2Int(numberOfRooms / 2, numberOfRooms / 2));
         spawnedRooms.Add(currentRoom);
     }
@@ -84,17 +78,13 @@ public class RoomGenerator : MonoBehaviour
     private void SpawnRooms()
     {
         int i = 0;
-        
         while (spawnedRooms.Count < numberOfRooms)
         {
             currentRoom = spawnedRooms[i];
-
             CreateNewRoom(Compass.N);
             CreateNewRoom(Compass.E);
             CreateNewRoom(Compass.S);
             CreateNewRoom(Compass.W);
-
-
             if (i == spawnedRooms.Count-1)
             {
                 break;
@@ -102,16 +92,19 @@ public class RoomGenerator : MonoBehaviour
 
             i++;
         }
-
-        StartCoroutine("CloseRooms");
+        StartCoroutine(CloseRoomsWithoutDestination());
     }
-
 
     private void CreateNewRoom(Compass _direction)
     {
+        if (!currentRoom.IsOpen(_direction))
+        {
+            return;
+        }
+
         Compass opposite = Compass.C;
         Vector2Int nextPlace = new Vector2Int(0, 0);
-        Vector2 nextTransform = new Vector2(0, 0);
+        Vector3 nextTransform = new Vector3(0, 0);
         GameObject[] roomArray = new GameObject[0];
 
         switch (_direction)
@@ -119,105 +112,88 @@ public class RoomGenerator : MonoBehaviour
             case Compass.N:
                 opposite = Compass.S;
                 nextPlace = currentRoom.roomCoordinate + Vector2Int.up;
-                nextTransform = new Vector2(currentRoom.transform.position.x, currentRoom.transform.position.y + roomSize.y);
+                nextTransform = new Vector3(currentRoom.transform.position.x, 0, currentRoom.transform.position.z + roomSize.y);
                 roomArray = southRooms; 
                 break;
             case Compass.E:
                 opposite = Compass.W;
                 nextPlace = currentRoom.roomCoordinate + Vector2Int.right;
-                nextTransform = new Vector2(currentRoom.transform.position.x + roomSize.x, currentRoom.transform.position.y);
+                nextTransform = new Vector3(currentRoom.transform.position.x + roomSize.x, 0, currentRoom.transform.position.z);
                 roomArray = westRooms;
                 break;
             case Compass.S:
                 opposite = Compass.N;
                 nextPlace = currentRoom.roomCoordinate + Vector2Int.down;
-                nextTransform = new Vector2(currentRoom.transform.position.x, currentRoom.transform.position.y - roomSize.y);
+                nextTransform = new Vector3(currentRoom.transform.position.x, 0, currentRoom.transform.position.z - roomSize.y);
                 roomArray = northRooms;
                 break;
             case Compass.W:
                 opposite = Compass.E;
                 nextPlace = currentRoom.roomCoordinate + Vector2Int.left;
-                nextTransform = new Vector2(currentRoom.transform.position.x - roomSize.x, currentRoom.transform.position.y);
+                nextTransform = new Vector3(currentRoom.transform.position.x - roomSize.x, 0, currentRoom.transform.position.z);
                 roomArray = eastRooms;
                 break;
             case Compass.C:
                 return;
         }
-
-
-        if (currentRoom.IsOpen(_direction) && !IsOccupied(nextPlace))
+        
+        if (IsOccupied(nextPlace))
         {
+            return;
+        }
 
-            // create a reference to a random GameObject in the corresponding array
-            GameObject temp = roomArray[Random.Range(1, roomArray.Length)];
-            bool nextRoomOpen = false;
+        GameObject temp = roomArray[Random.Range(1, roomArray.Length)];
+        bool nextRoomOpen = false;
 
-            while (!nextRoomOpen)
+        while (!nextRoomOpen)
+        {
+            Room tempRoom = temp.GetComponent<Room>();
+            // if the next room is completely enclosed, there is no possible exit to the loop
+            bool allOccupied = true;
+            foreach (KeyValuePair<Compass, Vector2Int> j in GetAdjacentCoords(nextPlace))
             {
-
-                Room tempRoom = temp.GetComponent<Room>();
-                // if the next room is completely enclosed, there is no possible exit to the loop
-                bool allOccupied = true;
-                foreach (KeyValuePair<Compass, Vector2Int> j in GetAdjacentCoords(nextPlace))
+                if (!IsOccupied(j.Value))
                 {
-                    if (!IsOccupied(j.Value))
-                    {
-                        allOccupied = false;
-                    }
-                }
-                // so break manually
-                if (allOccupied)
-                {
-                    Debug.Log("all spaces are occupied");
-                    break;
-                }
-
-                for (int j = 0; j < tempRoom.openingDirections.Count; j++)
-                {
-                    //skip origin
-                    if (tempRoom.openingDirections[j] == opposite)
-                    {
-                        continue;
-                    }
-
-                    //possible coords to open the next room towards
-                    Dictionary<Compass, Vector2Int> possibleCoords = GetPossibleCoords(nextPlace);
-
-                    // if there is an open space at the next exit
-                    if (possibleCoords.ContainsKey(tempRoom.openingDirections[j]))
-                    {
-                        // we can finish the loop
-                        nextRoomOpen = true;
-                    }
-                    else
-                    {
-                        // select a new random prefab in the array and try again
-                        temp = roomArray[Random.Range(1, roomArray.Length)];
-                    }
-
+                    allOccupied = false;
                 }
             }
+            // so break manually
+            if (allOccupied)
+            {
+                Debug.Log("all spaces are occupied");
+                break;
+            }
 
-            // instantiate the object
-            GameObject o = Instantiate(temp, nextTransform, Quaternion.identity, transform);
+            for (int j = 0; j < tempRoom.openingDirections.Count; j++)
+            {
+                //skip origin
+                if (tempRoom.openingDirections[j] == opposite)
+                {
+                    continue;
+                }
 
-            //initialize it
-            Room newRoom = o.GetComponent<Room>();
-            newRoom.Initialize(opposite, nextPlace);
-
-            //place it in the grid
-            roomGrid[nextPlace.x, nextPlace.y] = o;
-
-            //good neighbor
-            currentRoom.Connect(newRoom);
-
-            //add the new room to the list
-            spawnedRooms.Add(newRoom);
+                Dictionary<Compass, Vector2Int> possibleCoords = GetPossibleCoords(nextPlace);
+                if (possibleCoords.ContainsKey(tempRoom.openingDirections[j]))
+                {
+                    nextRoomOpen = true;
+                }
+                else
+                {
+                    // select a new random prefab in the array and try again
+                    temp = roomArray[Random.Range(1, roomArray.Length)];
+                }
+            }
         }
+
+        GameObject o = Instantiate(temp, nextTransform, Quaternion.identity, transform);
+        Room newRoom = o.GetComponent<Room>();
+        newRoom.Initialize(opposite, nextPlace);
+        roomGrid[nextPlace.x, nextPlace.y] = o;
+        currentRoom.Connect(newRoom);
+        spawnedRooms.Add(newRoom);
     }
 
-
-    private IEnumerator CloseRooms()
+    private IEnumerator CloseRoomsWithoutDestination()
     {
         for(int i=0; i<spawnedRooms.Count; i++)
         {
@@ -225,7 +201,6 @@ public class RoomGenerator : MonoBehaviour
             {
                 continue;
             }
-            
 
             if (spawnedRooms[i].origin == Compass.N)
             {
@@ -238,6 +213,7 @@ public class RoomGenerator : MonoBehaviour
                 yield return new WaitForEndOfFrame();
                 continue;
             }
+
             else if (spawnedRooms[i].origin == Compass.S)
             {
                 GameObject replacementRoom = Instantiate(southRooms[0], spawnedRooms[i].transform.position, Quaternion.identity, transform);
@@ -249,6 +225,7 @@ public class RoomGenerator : MonoBehaviour
                 yield return new WaitForEndOfFrame();
                 continue;
             }
+
             else if (spawnedRooms[i].origin == Compass.W)
             {
                 GameObject replacementRoom = Instantiate(westRooms[0], spawnedRooms[i].transform.position, Quaternion.identity, transform);
@@ -260,6 +237,7 @@ public class RoomGenerator : MonoBehaviour
                 yield return new WaitForEndOfFrame();
                 continue;
             }
+
             else if (spawnedRooms[i].origin == Compass.E)
             {
                 GameObject replacementRoom = Instantiate(eastRooms[0], spawnedRooms[i].transform.position, Quaternion.identity, transform);
@@ -271,7 +249,6 @@ public class RoomGenerator : MonoBehaviour
                 yield return new WaitForEndOfFrame();
             }
         }
-        //yield return new WaitForEndOfFrame();
 
         RoomsSpawned = true;
     }
@@ -325,10 +302,6 @@ public class RoomGenerator : MonoBehaviour
         if (!IsOccupied(new Vector2Int(_coord.x, _coord.y + 1))) adjCoords.Add(Compass.N, new Vector2Int(_coord.x, _coord.y + 1));
         if (!IsOccupied(new Vector2Int(_coord.x, _coord.y - 1))) adjCoords.Add(Compass.S, new Vector2Int(_coord.x, _coord.y - 1));
 
-        
         return adjCoords;
     }
-
-
-
 }

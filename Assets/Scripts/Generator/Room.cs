@@ -8,8 +8,8 @@ public class Room : MonoBehaviour
 {
     public Vector2Int roomCoordinate;
 
-    public Compass origin = Compass.C;
-    public Compass destination = Compass.C;
+    [HideInInspector]public Compass origin = Compass.C;
+    [HideInInspector]public Compass destination = Compass.C;
     public List<Compass> openingDirections;
     public Dictionary<Compass, Room> neighbors = new Dictionary<Compass, Room>();
     //public Dictionary<Compass, Vector2Int> adjacentCoords = new Dictionary<Compass, Vector2Int>();
