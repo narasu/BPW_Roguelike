@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-
+    
     private void FixedUpdate()
     {
         Vector3 playerPos = Player.Instance.transform.position;
@@ -15,8 +15,5 @@ public class CameraController : MonoBehaviour
         Vector3 nextPosition = Player.Instance.transform.position + targetRelativeToPlayer;
 
         transform.position = Vector3.Lerp(transform.position, new Vector3(nextPosition.x, transform.position.y, nextPosition.z), 0.2f);
-
-
-        
     }
 }
