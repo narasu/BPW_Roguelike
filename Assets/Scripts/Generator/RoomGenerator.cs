@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class instantiates and stores all rooms in the level, connects them together and closes off any ends.
+/// </summary>
 public class RoomGenerator : MonoBehaviour
 {
     private static RoomGenerator instance;
@@ -24,11 +27,13 @@ public class RoomGenerator : MonoBehaviour
     [Header("Room Prefabs")]
     [SerializeField] private GameObject startingRoom;
     [SerializeField] private GameObject[] northRooms, southRooms, westRooms, eastRooms;
-    [SerializeField] private GameObject[] encounters;
+    [SerializeField] private GameObject doorPrefab;
+    
 
-    private GameObject bossRoom;
+    public Room endRoom;
     private GameObject[,] roomGrid;
-    private List<Room> spawnedRooms = new List<Room>();
+    public List<Room> spawnedRooms = new List<Room>();
+    public List<Room> closedRooms = new List<Room>();
     private Room currentRoom;
     private bool roomsSpawned = false;
     private bool RoomsSpawned
@@ -37,11 +42,17 @@ public class RoomGenerator : MonoBehaviour
         {
             if (!roomsSpawned && value)
             {
-                //for (int i=0; i<spawnedRooms.Count; i++)
+                //for (int i = 0; i < closedRooms.Count; i++)
                 //{
-                //    Debug.Log(spawnedRooms[i]);
+                //    if (spawnedRooms.Contains(closedRooms[i]))
+                //    {
+                //        spawnedRooms.Remove(closedRooms[i]);
+                //    }
                 //}
                 //SpawnEncounters();
+                endRoom = closedRooms[0].SetEndRoom();
+                endRoom.PlaceDoorAtOrigin(doorPrefab);
+                GameManager.Instance.SpawnKeys();
                 roomsSpawned = value;
             }
         }
@@ -49,7 +60,15 @@ public class RoomGenerator : MonoBehaviour
 
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+
         if (UseSeed)
         {
             Random.InitState(Seed);
@@ -209,6 +228,7 @@ public class RoomGenerator : MonoBehaviour
                 roomGrid[spawnedRooms[i].roomCoordinate.x, spawnedRooms[i].roomCoordinate.y] = replacementRoom;
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
+                closedRooms.Add(replacementRoom.GetComponent<Room>());
                 Destroy(oldRoom);
                 yield return new WaitForEndOfFrame();
                 continue;
@@ -221,6 +241,7 @@ public class RoomGenerator : MonoBehaviour
                 roomGrid[spawnedRooms[i].roomCoordinate.x, spawnedRooms[i].roomCoordinate.y] = replacementRoom;
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
+                closedRooms.Add(replacementRoom.GetComponent<Room>());
                 Destroy(oldRoom);
                 yield return new WaitForEndOfFrame();
                 continue;
@@ -233,6 +254,7 @@ public class RoomGenerator : MonoBehaviour
                 roomGrid[spawnedRooms[i].roomCoordinate.x, spawnedRooms[i].roomCoordinate.y] = replacementRoom;
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
+                closedRooms.Add(replacementRoom.GetComponent<Room>());
                 Destroy(oldRoom);
                 yield return new WaitForEndOfFrame();
                 continue;
@@ -245,42 +267,13 @@ public class RoomGenerator : MonoBehaviour
                 roomGrid[spawnedRooms[i].roomCoordinate.x, spawnedRooms[i].roomCoordinate.y] = replacementRoom;
                 GameObject oldRoom = spawnedRooms[i].gameObject;
                 spawnedRooms[i] = replacementRoom.GetComponent<Room>();
+                closedRooms.Add(replacementRoom.GetComponent<Room>());
                 Destroy(oldRoom);
                 yield return new WaitForEndOfFrame();
             }
         }
 
         RoomsSpawned = true;
-    }
-
-    private void SpawnEncounters()
-    {
-        for (int i=1; i<spawnedRooms.Count; i++)
-        {
-            //if (spawnedRooms[i] == null)
-            //    continue;
-
-            Vector3 rotation = new Vector3(0, 0, 0);
-
-            if (spawnedRooms[i].origin == Compass.E)
-            {
-                rotation.z = 0;
-            }
-            if (spawnedRooms[i].origin == Compass.S)
-            {
-                rotation.z = -90;
-            }
-            if (spawnedRooms[i].origin == Compass.W)
-            {
-                rotation.z = 180;
-            }
-            if (spawnedRooms[i].origin == Compass.N)
-            {
-                rotation.z = 90;
-            }
-            Instantiate(encounters[Random.Range(0, encounters.Length)],spawnedRooms[i].transform.position, Quaternion.Euler(rotation));
-        }
-
     }
 
     private Dictionary<Compass, Vector2Int> GetAdjacentCoords(Vector2Int _coord)

@@ -39,4 +39,9 @@ public class Player : MonoBehaviour
         Vector3 movement = movementDirection * movementSpeed;
         rb.velocity = movement;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        other.GetComponent<ICollectible>()?.Collect();
+    }
 }

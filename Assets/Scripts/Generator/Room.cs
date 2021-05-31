@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,9 @@ public class Room : MonoBehaviour
     [HideInInspector]public Compass destination = Compass.C;
     public List<Compass> openingDirections;
     public Dictionary<Compass, Room> neighbors = new Dictionary<Compass, Room>();
+    Dictionary<GameObject, Vector3> objectsInRoom = new Dictionary<GameObject, Vector3>();
+    GameObject door;
+
     //public Dictionary<Compass, Vector2Int> adjacentCoords = new Dictionary<Compass, Vector2Int>();
 
     public void Initialize(Compass _origin, Vector2Int _roomCoordinate)
@@ -27,16 +31,7 @@ public class Room : MonoBehaviour
                 destination = openingDirections[i];
             }
         }
-        //Debug.Log(destination);
     }
-
-    //public void SetNeighborCoordinates()
-    //{
-    //    adjacentCoords[Compass.N] = roomCoordinate + Vector2Int.up;
-    //    adjacentCoords[Compass.E] = roomCoordinate + Vector2Int.right;
-    //    adjacentCoords[Compass.S] = roomCoordinate + Vector2Int.down;
-    //    adjacentCoords[Compass.W] = roomCoordinate + Vector2Int.left;
-    //}
 
     //does this room have an opening, and an empty space at the given direction?
     public bool IsOpen(Compass _direction)
@@ -54,9 +49,16 @@ public class Room : MonoBehaviour
         }
 
         //if so, we know this to be its destination
-        destination = _direction;
+        //destination = _direction;
         return true;
-    }    
+    }
+
+    public Room SetEndRoom()
+    {
+        // instantiate exit / boss / whatever
+        
+        return this;
+    }
 
     //does this room have a neighbor at its destination?
     public bool IsConnected()
@@ -122,29 +124,60 @@ public class Room : MonoBehaviour
     public int CountDistanceFromStart()
     {
         int i = 0;
-        //Debug.Log(origin);
-        //Debug.Log("dafucc");
-        //Debug.Log(neighbors.Count);
-        //foreach (KeyValuePair<Compass, Room> kvp in neighbors)
-        //{
-        //    Debug.Log(kvp.Key);
-        //}
-        //Debug.Log(neighbors);
-
-
         Room r = this;
         //as long as currently referenced room is not the starting room
         while (r.origin != Compass.C)
         {
             if (r.neighbors.ContainsKey(r.origin))
             {
-                //step into room's originating neighbor and count up
+                //step into room's origin neighbor and count up
                 r = r.neighbors[r.origin];
                 i++;
             }
-            
         }
         return i;
     }
 
+    public GameObject PlaceObject(GameObject _gameObject, Vector3 _offsetFromCenter)
+    {
+        if (Mathf.Abs(_offsetFromCenter.x) > 9.0f || Mathf.Abs(_offsetFromCenter.z) > 9.0f)
+        {
+            Debug.Log("Object is placed outside of the room!");
+            return null;
+        }
+
+        Vector3 spawnPosition = new Vector3(transform.position.x + _offsetFromCenter.x, 0.1f, transform.position.z + _offsetFromCenter.z);
+
+        GameObject placedObject = Instantiate(_gameObject, spawnPosition, Quaternion.identity); //todo: add rotation
+        objectsInRoom.Add(placedObject, _offsetFromCenter);
+        return placedObject;
+    }
+
+    public void PlaceDoorAtOrigin(GameObject _doorPrefab)
+    {
+        if (origin == Compass.N)
+        {
+            Vector3 spawnPosition = new Vector3(transform.position.x, 0.1f, transform.position.z + 10.0f);
+            GameManager.Instance.door = Instantiate(_doorPrefab, spawnPosition, Quaternion.identity);
+            return;
+        }
+        else if (origin == Compass.S)
+        {
+            Vector3 spawnPosition = new Vector3(transform.position.x, 0.1f, transform.position.z - 10.0f);
+            GameManager.Instance.door = Instantiate(_doorPrefab, spawnPosition, Quaternion.identity);
+            return;
+        }
+        else if (origin == Compass.W)
+        {
+            Vector3 spawnPosition = new Vector3(transform.position.x - 10.0f, 0.1f, transform.position.z);
+            GameManager.Instance.door = Instantiate(_doorPrefab, spawnPosition, Quaternion.Euler(0.0f, 90.0f, 0.0f));
+            return;
+        }
+        else if (origin == Compass.W)
+        {
+            Vector3 spawnPosition = new Vector3(transform.position.x + 10.0f, 0.1f, transform.position.z);
+            GameManager.Instance.door = Instantiate(_doorPrefab, spawnPosition, Quaternion.Euler(0.0f, 90.0f, 0.0f));
+            return;
+        }
+    }
 }
