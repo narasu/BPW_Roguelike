@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
-/// This class instantiates and stores all rooms in the level, connects them together and closes off any ends.
+/// This class instantiates and stores all rooms in the level, connects them together and closes off any loose ends.
 /// </summary>
 public class RoomGenerator : MonoBehaviour
 {
@@ -28,11 +29,14 @@ public class RoomGenerator : MonoBehaviour
     [SerializeField] private GameObject startingRoom;
     [SerializeField] private GameObject[] northRooms, southRooms, westRooms, eastRooms;
     [SerializeField] private GameObject doorPrefab;
-    
+    [SerializeField] private GameObject keyPrefab;
+    [SerializeField] private NavMeshSurface navMeshSurface;
+    [SerializeField] private EnemySpawner enemySpawner;
 
     public Room endRoom;
     private GameObject[,] roomGrid;
     public List<Room> spawnedRooms = new List<Room>();
+    public List<Room> corridors = new List<Room>();
     public List<Room> closedRooms = new List<Room>();
     private Room currentRoom;
     private bool roomsSpawned = false;
@@ -42,17 +46,11 @@ public class RoomGenerator : MonoBehaviour
         {
             if (!roomsSpawned && value)
             {
-                //for (int i = 0; i < closedRooms.Count; i++)
-                //{
-                //    if (spawnedRooms.Contains(closedRooms[i]))
-                //    {
-                //        spawnedRooms.Remove(closedRooms[i]);
-                //    }
-                //}
-                //SpawnEncounters();
+                navMeshSurface.BuildNavMesh();
                 endRoom = closedRooms[0].SetEndRoom();
                 endRoom.PlaceDoorAtOrigin(doorPrefab);
-                GameManager.Instance.SpawnKeys();
+                
+                SpawnKeys();
                 roomsSpawned = value;
             }
         }
@@ -82,7 +80,7 @@ public class RoomGenerator : MonoBehaviour
 
     private void Start()
     {
-        SpawnRooms();
+        GenerateRooms();
     }
 
     private bool IsOccupied(Vector2Int _position)
@@ -94,7 +92,7 @@ public class RoomGenerator : MonoBehaviour
         return false;
     }
 
-    private void SpawnRooms()
+    private void GenerateRooms()
     {
         int i = 0;
         while (spawnedRooms.Count < numberOfRooms)
@@ -112,6 +110,25 @@ public class RoomGenerator : MonoBehaviour
             i++;
         }
         StartCoroutine(CloseRoomsWithoutDestination());
+    }
+
+    private void SpawnEnemies()
+    {
+        for (int i = 0; i < corridors.Count; i++)
+        {
+            enemySpawner.SpawnEnemy(EnemyType.Crawler, corridors[i].transform.position);
+        }
+    }
+
+    public void SpawnKeys()
+    {
+
+        // the room at index 0 will be used as boss room
+        for (int i = 1; i < closedRooms.Count; i++)
+        {
+            GameObject placedKey = closedRooms[i].PlaceObject(keyPrefab, Vector3.zero);
+            GameManager.Instance.keysInLevel.Add(placedKey.GetComponent<Key>());
+        }
     }
 
     private void CreateNewRoom(Compass _direction)
@@ -216,8 +233,14 @@ public class RoomGenerator : MonoBehaviour
     {
         for(int i=0; i<spawnedRooms.Count; i++)
         {
-            if(spawnedRooms[i]==null || spawnedRooms[i].IsConnected())
+            if(spawnedRooms[i]==null)
             {
+                continue;
+            }
+
+            if (spawnedRooms[i].HasNeighborAtDestination())
+            {
+                corridors.Add(spawnedRooms[i]);
                 continue;
             }
 

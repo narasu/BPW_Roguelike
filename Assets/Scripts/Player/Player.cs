@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("hit: " + other.gameObject);
         other.GetComponent<ICollectible>()?.Collect();
     }
 }

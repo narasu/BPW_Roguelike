@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject keyPrefab;
     public List<Key> keysInLevel = new List<Key>();
     public GameObject door;
+    [SerializeField] private EnemySpawner enemySpawner;
+
+    private Dictionary<EnemyType, List<GameObject>> enemyDictionary;
 
     private bool keysCollected = false;
     private bool KeysCollected
@@ -29,7 +32,7 @@ public class GameManager : MonoBehaviour
         {
             if (!keysCollected && value)
             {
-                Destroy(door);
+                //Destroy(door);
                 keysCollected = true;
             }
         }
@@ -45,6 +48,8 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        enemyDictionary = new Dictionary<EnemyType, List<GameObject>>();
     }
     // Start is called before the first frame update
     void Start()
@@ -58,16 +63,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void SpawnKeys()
-    {
-
-        // the room at index 0 will be used as end room
-        for (int i = 1; i < roomGenerator.closedRooms.Count; i++)
-        {
-            GameObject placedKey = roomGenerator.closedRooms[i].PlaceObject(keyPrefab, Vector3.zero);
-            keysInLevel.Add(placedKey.GetComponent<Key>());
-        }
-    }
+    
 
     void OnKeyCollected()
     {
@@ -75,37 +71,11 @@ public class GameManager : MonoBehaviour
 
     }
 
-    //private void SpawnEncounters()
-    //{
-    //    for (int i = 1; i < spawnedRooms.Count; i++)
-    //    {
-    //        if (closedRooms.Contains(spawnedRooms[i]))
-    //        {
-    //            continue;
-    //        }
-    //        //if (spawnedRooms[i] == null)
-    //        //    continue;
+    public void ClearEnemies()
+    {
 
-    //        Vector3 rotation = new Vector3(0, 0, 0);
+    }
 
-    //        if (spawnedRooms[i].origin == Compass.E)
-    //        {
-    //            rotation.z = 0;
-    //        }
-    //        if (spawnedRooms[i].origin == Compass.S)
-    //        {
-    //            rotation.z = -90;
-    //        }
-    //        if (spawnedRooms[i].origin == Compass.W)
-    //        {
-    //            rotation.z = 180;
-    //        }
-    //        if (spawnedRooms[i].origin == Compass.N)
-    //        {
-    //            rotation.z = 90;
-    //        }
-    //        Instantiate(encounters[Random.Range(0, encounters.Length)], spawnedRooms[i].transform.position, Quaternion.Euler(rotation));
-    //    }
-
-    //}
+    public void AddEnemyToList(EnemyType _enemyType, GameObject _instantiatedObject) =>
+        enemyDictionary[_enemyType].Add(_instantiatedObject);
 }
