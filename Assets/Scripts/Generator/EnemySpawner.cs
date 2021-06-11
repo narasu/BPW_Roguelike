@@ -10,6 +10,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject crawlerPrefab;
 
     private Dictionary<EnemyType, GameObject> enemyPrefabs;
+    private int maxEnemiesPerRoom = 5;
 
     private void Awake()
     {
@@ -20,9 +21,23 @@ public class EnemySpawner : MonoBehaviour
         };
     }
 
-    public void SpawnEnemy(EnemyType _enemyType, Vector3 _position)
+    public void SpawnEnemies(EnemyType _enemyType, Room _room)
     {
-        GameObject o = Instantiate(enemyPrefabs[_enemyType], _position, Quaternion.identity);
-        GameManager.Instance.AddEnemyToList(_enemyType, o);
+        List<SpawnPoint> emptyPoints = _room.GetEmptySpawnPoints();
+
+        for (int i = 0; i < maxEnemiesPerRoom; i++)
+        {
+            if (emptyPoints.Count == 0)
+            {
+                break;
+            }
+            int j = Random.Range(0, emptyPoints.Count);
+            Transform t = emptyPoints[j].transform;
+            
+            GameObject o = Instantiate(enemyPrefabs[_enemyType], t.position, Quaternion.identity);
+            emptyPoints[j].Empty = false;
+            emptyPoints.RemoveAt(j);
+            GameManager.Instance.AddEnemyToList(_enemyType, o);
+        }
     }
 }

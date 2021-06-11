@@ -49,7 +49,11 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        enemyDictionary = new Dictionary<EnemyType, List<GameObject>>();
+        enemyDictionary = new Dictionary<EnemyType, List<GameObject>>()
+        {
+            { EnemyType.Crawler, new List<GameObject>() },
+            { EnemyType.Turret, new List<GameObject>() }
+        };
     }
     // Start is called before the first frame update
     void Start()

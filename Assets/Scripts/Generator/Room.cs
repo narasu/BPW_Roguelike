@@ -1,4 +1,4 @@
-﻿using System;
+﻿//using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,24 +15,8 @@ public class Room : MonoBehaviour
     [HideInInspector]public Compass destination = Compass.C;
     public List<Compass> openingDirections;
     public Dictionary<Compass, Room> neighbors = new Dictionary<Compass, Room>();
-    //public List<Vector3> spawnPositions = new List<Vector3>()
-    //{
-    //    new Vector3(-8.0f, 0.0f, -8.0f),
-    //    new Vector3(-8.0f, 0.0f, -4.0f),
-    //    new Vector3(-8.0f, 0.0f, 0.0f),
-    //    new Vector3(-8.0f, 0.0f, 4.0f),
-    //    new Vector3(-8.0f, 0.0f, 8.0f),
-    //    new Vector3(-4.0f, 0.0f, -8.0f),
-    //    new Vector3(-4.0f, 0.0f, -4.0f),
-    //    new Vector3(-4.0f, 0.0f, 0.0f),
-    //    new Vector3(-4.0f, 0.0f, 4.0f),
-    //    new Vector3(-4.0f, 0.0f, 8.0f),
-    //    new Vector3(0.0f, 0.0f, -8.0f),
-    //    new Vector3(0.0f, 0.0f, -4.0f),
-    //    new Vector3(0.0f, 0.0f, 0.0f),
-    //    new Vector3(0.0f, 0.0f, 4.0f),
-    //    new Vector3(0.0f, 0.0f, 8.0f)
-    //};
+    private SpawnPoint[] spawnPoints;
+    private int maxEnemies;
 
     float stepSize = 4.0f;
 
@@ -43,8 +27,9 @@ public class Room : MonoBehaviour
     {
         origin = _origin;
         roomCoordinate = _roomCoordinate;
-        //SetNeighborCoordinates();
-
+        spawnPoints = GetComponentsInChildren<SpawnPoint>();
+        //Debug.Log(spawnPoints.Length);
+        
         for (int i=0; i<openingDirections.Count; i++)
         {
             if (openingDirections[i] != origin)
@@ -53,6 +38,7 @@ public class Room : MonoBehaviour
             }
         }
     }
+    
 
     //does this room have an opening, and an empty space at the given direction?
     public bool IsOpen(Compass _direction)
@@ -138,6 +124,7 @@ public class Room : MonoBehaviour
         return count;
     }
 
+
     public GameObject PlaceObject(GameObject _gameObject, Vector3 _offsetFromCenter)
     {
 
@@ -181,4 +168,39 @@ public class Room : MonoBehaviour
             return;
         }
     }
+
+    public List<SpawnPoint> GetEmptySpawnPoints()
+    {
+        List<SpawnPoint> emptyPoints = new List<SpawnPoint>();
+        foreach (SpawnPoint s in spawnPoints)
+        {
+            if (s.Empty)
+            {
+                emptyPoints.Add(s);
+            }
+        }
+        Debug.Log(emptyPoints.Count);
+        return emptyPoints;
+    }
+
+    //public Transform GetRandomEmptySpawnPoint()
+    //{
+    //    List<Transform> emptyPoints = new List<Transform>();
+
+    //    foreach(SpawnPoint s in spawnPoints)
+    //    {
+    //        if (s.Empty)
+    //        {
+    //            emptyPoints.Add(s.transform);
+    //        }
+    //    }
+    //    if (emptyPoints.Count == 0)
+    //    {
+    //        Debug.Log("no available spawn points");
+    //        return null;
+    //    }
+
+    //    return emptyPoints[Random.Range(0, emptyPoints.Count)];
+
+    //}
 }

@@ -50,6 +50,12 @@ public class RoomGenerator : MonoBehaviour
                 endRoom = closedRooms[0].SetEndRoom();
                 endRoom.PlaceDoorAtOrigin(doorPrefab);
                 
+                for (int i = 0; i < corridors.Count; i++)
+                {
+                    //Debug.Log("listen to the ladies come on and let me spawn");
+                    enemySpawner.SpawnEnemies(EnemyType.Crawler, corridors[i]);
+                }
+
                 SpawnKeys();
                 roomsSpawned = value;
             }
@@ -110,14 +116,6 @@ public class RoomGenerator : MonoBehaviour
             i++;
         }
         StartCoroutine(CloseRoomsWithoutDestination());
-    }
-
-    private void SpawnEnemies()
-    {
-        for (int i = 0; i < corridors.Count; i++)
-        {
-            enemySpawner.SpawnEnemy(EnemyType.Crawler, corridors[i].transform.position);
-        }
     }
 
     public void SpawnKeys()
