@@ -6,13 +6,13 @@ public enum EnemyStateType { Idle, Chase, Attack }
 public abstract class EnemyState
 {
     protected EnemyFSM owner;
-    protected Enemy interactable;
+    protected Enemy enemy;
     protected Player player;
 
     public void Initialize(EnemyFSM owner)
     {
         this.owner = owner;
-        interactable = owner.owner;
+        enemy = owner.owner;
         player = Player.Instance;
     }
 
@@ -42,6 +42,7 @@ public class ChaseState : EnemyState
     }
     public override void Update()
     {
+        //enemy.navMeshAgent.SetDestination(player.position);
     }
     public override void Exit()
     {

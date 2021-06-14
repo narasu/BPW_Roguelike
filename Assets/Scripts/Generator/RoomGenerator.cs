@@ -52,7 +52,6 @@ public class RoomGenerator : MonoBehaviour
                 
                 for (int i = 0; i < corridors.Count; i++)
                 {
-                    //Debug.Log("listen to the ladies come on and let me spawn");
                     enemySpawner.SpawnEnemies(EnemyType.Crawler, corridors[i]);
                 }
 
@@ -311,10 +310,11 @@ public class RoomGenerator : MonoBehaviour
     private Dictionary<Compass, Vector2Int> GetPossibleCoords(Vector2Int _coord)
     {
         Dictionary<Compass, Vector2Int> adjCoords = new Dictionary<Compass, Vector2Int>();
-        if (!IsOccupied(new Vector2Int(_coord.x - 1, _coord.y))) adjCoords.Add(Compass.W, new Vector2Int(_coord.x - 1, _coord.y));
-        if (!IsOccupied(new Vector2Int(_coord.x + 1, _coord.y))) adjCoords.Add(Compass.E, new Vector2Int(_coord.x + 1, _coord.y));
-        if (!IsOccupied(new Vector2Int(_coord.x, _coord.y + 1))) adjCoords.Add(Compass.N, new Vector2Int(_coord.x, _coord.y + 1));
-        if (!IsOccupied(new Vector2Int(_coord.x, _coord.y - 1))) adjCoords.Add(Compass.S, new Vector2Int(_coord.x, _coord.y - 1));
+        
+        if (!IsOccupied(_coord + Vector2Int.left)) adjCoords.Add(Compass.W, _coord + Vector2Int.left);
+        if (!IsOccupied(_coord + Vector2Int.right)) adjCoords.Add(Compass.E, _coord + Vector2Int.right);
+        if (!IsOccupied(_coord + Vector2Int.up)) adjCoords.Add(Compass.N, _coord + Vector2Int.up);
+        if (!IsOccupied(_coord + Vector2Int.down)) adjCoords.Add(Compass.S, _coord + Vector2Int.down);
 
         return adjCoords;
     }

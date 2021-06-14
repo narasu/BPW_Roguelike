@@ -13,7 +13,7 @@ public class Crawler : Enemy
 
     private void Update()
     {
-        navMeshAgent.SetDestination(player.position);
+        
     }
 }
 
