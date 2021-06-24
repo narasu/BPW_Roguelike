@@ -6,20 +6,20 @@ using UnityEngine;
 public class Enemy : MonoBehaviour, IDamageable
 {
     [SerializeField] protected int health;
-    protected Transform player;
-    protected EnemyFSM fsm;
+    public float detectionDistance;
+    //protected Transform player;
+    
 
     protected virtual void Awake()
     {
-        player = Player.Instance.gameObject.transform;
-        fsm = new EnemyFSM();
-        fsm.Initialize(this);
-        fsm.AddState(EnemyStateType.Idle, new IdleState());
+        //player = Player.Instance.gameObject.transform;
+        
+        
     }
 
     private void Start()
     {
-        fsm.GotoState(EnemyStateType.Idle);
+        
     }
 
     protected virtual void Die()

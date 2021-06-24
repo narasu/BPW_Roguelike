@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyStateType { Idle, Chase, Attack }
-public abstract class EnemyState
+public abstract class CrawlerState
 {
-    protected EnemyFSM owner;
-    protected Enemy enemy;
+    protected CrawlerFSM owner;
+    protected Crawler enemy;
     protected Player player;
 
-    public void Initialize(EnemyFSM owner)
+    public void Initialize(CrawlerFSM owner)
     {
         this.owner = owner;
         enemy = owner.owner;
@@ -21,35 +21,42 @@ public abstract class EnemyState
     public abstract void Exit();
 }
 
-public class IdleState : EnemyState
+public class IdleState : CrawlerState
 {
     public override void Enter()
     {
+        Debug.Log("idle");
     }
     public override void Update()
     {
-
+        //Debug.Log(Vector3.Distance(owner.owner.transform.position, Player.Instance.transform.position));
+        if (Vector3.Distance(owner.owner.transform.position, Player.Instance.transform.position) < owner.owner.detectionDistance)
+        {
+            Debug.Log("welloe anderhalf meter");
+            owner.GotoState(EnemyStateType.Chase);
+        }
     }
     public override void Exit()
     {
 
     }
 }
-public class ChaseState : EnemyState
+public class ChaseState : CrawlerState
 {
     public override void Enter()
     {
+        Debug.Log("chase");
     }
     public override void Update()
     {
-        //enemy.navMeshAgent.SetDestination(player.position);
+        enemy.navMeshAgent.SetDestination(Player.Instance.transform.position);
     }
     public override void Exit()
     {
 
     }
 }
-public class AttackState : EnemyState
+public class AttackState : CrawlerState
 {
     public override void Enter()
     {

@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyFSM
+public class CrawlerFSM
 {
-    public Enemy owner { get; private set; }
-    private Dictionary<EnemyStateType, EnemyState> states;
+    public Crawler owner { get; private set; }
+    private Dictionary<EnemyStateType, CrawlerState> states;
     public EnemyStateType CurrentStateType { get; private set; }
-    private EnemyState currentState;
-    private EnemyState previousState;
+    private CrawlerState currentState;
+    private CrawlerState previousState;
 
-    public void Initialize(Enemy _owner)
+    public void Initialize(Crawler _owner)
     {
         owner = _owner;
-        states = new Dictionary<EnemyStateType, EnemyState>();
+        states = new Dictionary<EnemyStateType, CrawlerState>();
     }
 
-    public void AddState(EnemyStateType newType, EnemyState newState)
+    public void AddState(EnemyStateType newType, CrawlerState newState)
     {
         states.Add(newType, newState);
         states[newType].Initialize(this);
@@ -43,7 +43,7 @@ public class EnemyFSM
         currentState.Enter();
     }
 
-    public EnemyState GetState(EnemyStateType type)
+    public CrawlerState GetState(EnemyStateType type)
     {
         if (!states.ContainsKey(type))
         {

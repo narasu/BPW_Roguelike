@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 2
+  detectionDistance: 5.19
+  navMeshAgent: {fileID: 0}
 --- !u!58 &3515993933899803090
 CircleCollider2D:
   m_ObjectHideFlags: 0
