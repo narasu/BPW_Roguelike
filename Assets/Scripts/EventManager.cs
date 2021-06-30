@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public enum EventType { KEY_COLLECTED }
+public enum EventType { KEY_COLLECTED, PLAYER_DIED }
 public class EventManager
 {
 	private static Dictionary<EventType, System.Action> eventDictionary = new Dictionary<EventType, System.Action>();

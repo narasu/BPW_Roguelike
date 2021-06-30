@@ -6,9 +6,8 @@ public class Crawler : Enemy
 {
     private CrawlerFSM fsm;
     public NavMeshAgent navMeshAgent;
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         fsm = new CrawlerFSM();
         fsm.Initialize(this);
         fsm.AddState(EnemyStateType.Idle, new IdleState());
@@ -24,6 +23,18 @@ public class Crawler : Enemy
     private void Update()
     {
         fsm.UpdateState();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent(out Player player))
+        {
+            if (!player.IsHit)
+            {
+                player.TakeDamage();
+            }
+            Die();
+        }
     }
 }
 

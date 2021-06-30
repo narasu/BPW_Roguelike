@@ -7,15 +7,11 @@ public class Enemy : MonoBehaviour, IDamageable
 {
     [SerializeField] protected int health;
     public float detectionDistance;
-    //protected Transform player;
-    
+    private SpawnPoint spawnPoint;
 
-    protected virtual void Awake()
-    {
-        //player = Player.Instance.gameObject.transform;
-        
-        
-    }
+    //protected Transform player;
+
+    public void Initialize(SpawnPoint _spawnPoint) => spawnPoint = _spawnPoint;
 
     private void Start()
     {
@@ -25,6 +21,7 @@ public class Enemy : MonoBehaviour, IDamageable
     protected virtual void Die()
     {
         Destroy(gameObject);
+        spawnPoint.Empty = true;
         // spawn ammo/health
     }
     public virtual void TakeDamage(int _damage)

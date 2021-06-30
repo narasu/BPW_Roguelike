@@ -25,14 +25,13 @@ public class IdleState : CrawlerState
 {
     public override void Enter()
     {
-        Debug.Log("idle");
+
     }
     public override void Update()
     {
         //Debug.Log(Vector3.Distance(owner.owner.transform.position, Player.Instance.transform.position));
         if (Vector3.Distance(owner.owner.transform.position, Player.Instance.transform.position) < owner.owner.detectionDistance)
         {
-            Debug.Log("welloe anderhalf meter");
             owner.GotoState(EnemyStateType.Chase);
         }
     }
@@ -45,7 +44,6 @@ public class ChaseState : CrawlerState
 {
     public override void Enter()
     {
-        Debug.Log("chase");
     }
     public override void Update()
     {

@@ -29,6 +29,7 @@ public class RoomGenerator : MonoBehaviour
     [SerializeField] private GameObject startingRoom;
     [SerializeField] private GameObject[] northRooms, southRooms, westRooms, eastRooms;
     [SerializeField] private GameObject doorPrefab;
+    [SerializeField] private GameObject exitPrefab;
     [SerializeField] private GameObject keyPrefab;
     [SerializeField] private NavMeshSurface navMeshSurface;
     [SerializeField] private EnemySpawner enemySpawner;
@@ -40,6 +41,8 @@ public class RoomGenerator : MonoBehaviour
     public List<Room> closedRooms = new List<Room>();
     private Room currentRoom;
     private bool roomsSpawned = false;
+    
+
     private bool RoomsSpawned
     {
         set
@@ -49,6 +52,7 @@ public class RoomGenerator : MonoBehaviour
                 navMeshSurface.BuildNavMesh();
                 endRoom = closedRooms[0].SetEndRoom();
                 endRoom.PlaceDoorAtOrigin(doorPrefab);
+                endRoom.PlaceObject(exitPrefab, Vector3.zero);
                 
                 for (int i = 0; i < corridors.Count; i++)
                 {

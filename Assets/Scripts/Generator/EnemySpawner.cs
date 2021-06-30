@@ -35,6 +35,7 @@ public class EnemySpawner : MonoBehaviour
             Transform t = emptyPoints[j].transform;
             
             GameObject o = Instantiate(enemyPrefabs[_enemyType], t.position, Quaternion.identity);
+            o.GetComponent<Enemy>()?.Initialize(emptyPoints[j]);
             emptyPoints[j].Empty = false;
             emptyPoints.RemoveAt(j);
             GameManager.Instance.AddEnemyToList(_enemyType, o);

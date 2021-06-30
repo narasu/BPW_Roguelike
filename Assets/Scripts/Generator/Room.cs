@@ -179,7 +179,6 @@ public class Room : MonoBehaviour
                 emptyPoints.Add(s);
             }
         }
-        Debug.Log(emptyPoints.Count);
         return emptyPoints;
     }
 
