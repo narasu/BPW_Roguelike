@@ -7,8 +7,7 @@ public class Key : MonoBehaviour, ICollectible
     public void Collect()
     {
         GameManager.Instance.keysInLevel.Remove(this);
-        // TODO: make OnKeyCollected event in GameManager, invoke it here
-        Debug.Log("collected");
+        EventManager.RaiseEvent(EventType.KEY_COLLECTED);
         Destroy(gameObject);
     }
 }

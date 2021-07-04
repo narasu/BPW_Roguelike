@@ -1,17 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 public class Player : MonoBehaviour
 {
+    
     [SerializeField] private int health;
     [SerializeField] private float movementSpeed;
-    public Weapon activeWeapon;
+    public int Health { get => health; }
+    [HideInInspector]public Weapon activeWeapon;
     public static Player Instance { get => instance; }
     private static Player instance;
-
     private Rigidbody rb;
+    private NavMeshObstacle navMeshObstacle;
     public bool IsHit { get => isHit; }
     private bool isHit = false;
     
@@ -19,9 +22,8 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        navMeshObstacle = GetComponent<NavMeshObstacle>();
         instance = this;
-
-        
     }
 
     private void Update()
@@ -29,6 +31,7 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             //shoot
+            activeWeapon.Shoot();
         }
     }
 
@@ -52,6 +55,7 @@ public class Player : MonoBehaviour
             isHit = true;
             rb.velocity = Vector3.zero;
             health--;
+            EventManager.RaiseEvent(EventType.PLAYER_HIT);
             if (health <= 0)
             {
                 Die();
@@ -69,19 +73,21 @@ public class Player : MonoBehaviour
 
     private IEnumerator ImmuneTimer()
     {
-        
+        navMeshObstacle.enabled = true;
         yield return new WaitForSeconds(0.65f);
         isHit = false;
+        navMeshObstacle.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("hit: " + other.gameObject);
         if (other.gameObject.CompareTag("Exit"))
         {
-            GameManager.Instance.WinGame();
+            EventManager.RaiseEvent(EventType.PLAYER_WIN);
             return;
         }
-        Debug.Log("hit: " + other.gameObject);
+        
         other.GetComponent<ICollectible>()?.Collect();
     }
 }

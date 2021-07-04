@@ -182,24 +182,4 @@ public class Room : MonoBehaviour
         return emptyPoints;
     }
 
-    //public Transform GetRandomEmptySpawnPoint()
-    //{
-    //    List<Transform> emptyPoints = new List<Transform>();
-
-    //    foreach(SpawnPoint s in spawnPoints)
-    //    {
-    //        if (s.Empty)
-    //        {
-    //            emptyPoints.Add(s.transform);
-    //        }
-    //    }
-    //    if (emptyPoints.Count == 0)
-    //    {
-    //        Debug.Log("no available spawn points");
-    //        return null;
-    //    }
-
-    //    return emptyPoints[Random.Range(0, emptyPoints.Count)];
-
-    //}
 }

@@ -20,8 +20,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     protected virtual void Die()
     {
+        //EventManager.RaiseEvent(EventType.ENEMY_KILLED);
+        //spawnPoint.Empty = true;
         Destroy(gameObject);
-        spawnPoint.Empty = true;
+        
         // spawn ammo/health
     }
     public virtual void TakeDamage(int _damage)

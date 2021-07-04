@@ -6,6 +6,10 @@ MonoImporter:
   defaultReferences:
   - muzzleFlash: {fileID: 4283086732811903254, guid: ba7edd5fc695f4149add3293a36eafa7,
       type: 3}
+  - lineEffect: {fileID: 2413022552917206086, guid: 8532d0b7e28216748a6518366b8bb89d,
+      type: 3}
+  - bulletImpact: {fileID: 7778541952624359610, guid: be4c96ba44a8ec24ca24bd42d169c643,
+      type: 3}
   - firePoint: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
