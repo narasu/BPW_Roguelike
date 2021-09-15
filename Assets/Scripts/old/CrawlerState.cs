@@ -13,7 +13,7 @@ public abstract class CrawlerState
     {
         this.owner = owner;
         enemy = owner.owner;
-        player = Player.Instance;
+        player = Player.pInstance;
     }
 
     public abstract void Enter();
@@ -30,7 +30,7 @@ public class IdleState : CrawlerState
     public override void Update()
     {
         //Debug.Log(Vector3.Distance(owner.owner.transform.position, Player.Instance.transform.position));
-        if (Vector3.Distance(owner.owner.transform.position, Player.Instance.transform.position) < owner.owner.detectionDistance)
+        if (Vector3.Distance(owner.owner.transform.position, Player.pInstance.transform.position) < owner.owner.detectionDistance)
         {
             owner.GotoState(EnemyStateType.Chase);
         }
@@ -47,7 +47,7 @@ public class ChaseState : CrawlerState
     }
     public override void Update()
     {
-        enemy.navMeshAgent.SetDestination(Player.Instance.transform.position);
+        enemy.navMeshAgent.SetDestination(Player.pInstance.transform.position);
     }
     public override void Exit()
     {

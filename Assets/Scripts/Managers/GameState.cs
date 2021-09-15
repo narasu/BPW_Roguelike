@@ -3,79 +3,76 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameStateType { Setup, Playing, Win, Lose }
-public abstract class GameState
+public abstract class GameState : State<GameManager>
 {
-    protected GameFSM owner;
+    public FSM<GameManager> owner;
     protected GameManager gameManager;
     protected Player player;
 
-    public void Initialize(GameFSM _owner)
+    public GameState(FSM<GameManager> _owner)
     {
-        this.owner = _owner;
-        gameManager = _owner.owner;
-        player = Player.Instance;
+        owner = _owner;
     }
 
-    public abstract void Enter();
-    public abstract void Update();
-    public abstract void Exit();
+    //public void Initialize(GameFSM _owner)
+    //{
+    //    this.owner = _owner;
+    //    gameManager = _owner.owner;
+    //    player = Player.Instance;
+    //}
+
+    public override void OnEnter() { }
+    public override void OnUpdate() { }
+    public override void OnExit() { }
 }
 public class SetupState : GameState
 {
-    public override void Enter()
-    {
-
-    }
-    public override void Update()
-    {
-
-    }
-    public override void Exit()
-    {
-
-    }
+    public SetupState(FSM<GameManager> _owner) : base(_owner) { }
 }
 public class PlayingState : GameState
 {
-    public override void Enter()
+    public PlayingState(FSM<GameManager> _owner) : base(_owner) { }
+    public override void OnEnter()
     {
         
     }
-    public override void Update()
+    public override void OnUpdate()
     {
         
     }
-    public override void Exit()
+    public override void OnExit()
     {
 
     }
 }
 public class WinState : GameState
 {
-    public override void Enter()
+    public WinState(FSM<GameManager> _owner) : base(_owner) { }
+    public override void OnEnter()
     {
 
     }
-    public override void Update()
+    public override void OnUpdate()
     {
 
     }
-    public override void Exit()
+    public override void OnExit()
     {
 
     }
 }
 public class LoseState : GameState
 {
-    public override void Enter()
+    public LoseState(FSM<GameManager> _owner) : base(_owner) { }
+    public override void OnEnter()
     {
 
     }
-    public override void Update()
+    public override void OnUpdate()
     {
 
     }
-    public override void Exit()
+    public override void OnExit()
     {
 
     }

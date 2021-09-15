@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField] private Menu[] menuObjects;
-    private Dictionary<MenuType, Menu> menus;
-    public MenuType CurrentMenu { get => currentMenu; }
+    public MenuType pCurrentMenu 
+    { 
+        get => currentMenu; 
+    }
     private MenuType currentMenu;
-
-    public static MenuManager Instance
+    public static MenuManager pInstance
     {
         get
         {
@@ -22,6 +22,59 @@ public class MenuManager : MonoBehaviour
         }
     }
     private static MenuManager instance;
+
+    [SerializeField] private Menu[] menuObjects;
+    private Dictionary<MenuType, Menu> menus;
+
+    public void OpenMenu(int _menuType)
+    {
+        MenuType t = (MenuType)_menuType;
+
+
+        if (currentMenu == t || menus[t] == null)
+        {
+            return;
+        }
+        CloseMenu();
+        menus[t].Open();
+        currentMenu = t;
+    }
+    public void OpenMenu(MenuType _menuType)
+    {
+
+        if (currentMenu == _menuType || !menus.ContainsKey(_menuType))
+        {
+            Debug.Log("menu is already open?");
+            return;
+        }
+        CloseMenu();
+        menus[_menuType].Open();
+        currentMenu = _menuType;
+    }
+
+    public void CloseMenu()
+    {
+
+        if (!menus.ContainsKey(currentMenu))
+        {
+            return;
+        }
+        if (menus[currentMenu].isActiveAndEnabled)
+        {
+            menus[currentMenu].Close();
+        }
+
+    }
+
+    public void GotoScene(int _scene) 
+    { 
+        SceneManager.LoadScene(_scene);
+    }
+
+    public void QuitGame() 
+    {
+        Application.Quit();
+    }
 
     private void Awake()
     {
@@ -44,45 +97,5 @@ public class MenuManager : MonoBehaviour
         //OpenMenu(MenuType.Main);
     }
 
-    public void OpenMenu(int _menuType)
-    {
-        MenuType t = (MenuType)_menuType;
-
-        
-        if (currentMenu == t || menus[t] == null)
-        {
-            return;
-        }
-        CloseMenu();
-        menus[t].Open();
-        currentMenu = t;
-    }
-    public void OpenMenu(MenuType _menuType)
-    {
-        
-        if (currentMenu == _menuType || !menus.ContainsKey(_menuType))
-        {
-            Debug.Log("menu is already open?");
-            return;
-        }
-        CloseMenu();
-        menus[_menuType].Open();
-        currentMenu = _menuType;
-    }
-
-    public void CloseMenu()
-    {
-
-        if (!menus.ContainsKey(currentMenu))
-        {
-            return;
-        }
-        if (menus[currentMenu].isActiveAndEnabled)
-        {
-            menus[currentMenu].Close();
-        }
-        
-    }
-    public void GotoScene(int _scene) => SceneManager.LoadScene(_scene);
-    public void QuitGame() => Application.Quit();
+    
 }

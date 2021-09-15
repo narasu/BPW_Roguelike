@@ -5,5 +5,8 @@ using UnityEngine;
 public class SpawnPoint : MonoBehaviour
 {
     private bool empty = true;
-    public bool Empty { get => empty; set => empty = value; }
+    public bool Empty
+    { 
+        get => empty; set => empty = value; 
+    }
 }

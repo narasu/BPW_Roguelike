@@ -8,6 +8,6 @@ public class MinimapCamera : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = new Vector3(Player.Instance.transform.position.x, transform.position.y, Player.Instance.transform.position.z);
+        transform.position = new Vector3(Player.pInstance.transform.position.x, transform.position.y, Player.pInstance.transform.position.z);
     }
 }

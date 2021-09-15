@@ -10,7 +10,7 @@ public class Turret : Enemy
     
     private void Update()
     {
-        direction = (Player.Instance.transform.position - transform.position).normalized;
+        direction = (Player.pInstance.transform.position - transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(direction);
         if (Input.GetKeyDown(KeyCode.F)) Shoot();
     }

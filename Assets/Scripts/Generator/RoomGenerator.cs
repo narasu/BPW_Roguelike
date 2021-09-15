@@ -8,23 +8,11 @@ using UnityEngine.AI;
 /// </summary>
 public class RoomGenerator : MonoBehaviour
 {
-    private static RoomGenerator instance;
-    public static RoomGenerator Instance
-    {
-        get 
-        { 
-            if (instance==null)
-            {
-                instance = FindObjectOfType<RoomGenerator>();
-            }
-            return instance; 
-        }
-    }
     [Header("Generation parameters")]
-    public bool UseSeed;
-    public int Seed;
+    [SerializeField] private bool UseSeed;
+    [SerializeField] private int Seed;
     [SerializeField] [Range(5, 50)] private int numberOfRooms;
-    public Vector2 roomSize;
+    [SerializeField] private Vector2 roomSize;
     [Header("Room Prefabs")]
     [SerializeField] private GameObject startingRoom;
     [SerializeField] private GameObject[] northRooms, southRooms, westRooms, eastRooms;
@@ -34,16 +22,28 @@ public class RoomGenerator : MonoBehaviour
     [SerializeField] private NavMeshSurface navMeshSurface;
     [SerializeField] private EnemySpawner enemySpawner;
 
-    public Room endRoom;
+    private Room endRoom;
     private GameObject[,] roomGrid;
-    public List<Room> spawnedRooms = new List<Room>();
-    public List<Room> corridors = new List<Room>();
-    public List<Room> closedRooms = new List<Room>();
+    private List<Room> spawnedRooms = new List<Room>();
+    private List<Room> corridors = new List<Room>();
+    private List<Room> closedRooms = new List<Room>();
     private Room currentRoom;
     private bool roomsSpawned = false;
-    
 
-    private bool RoomsSpawned
+    private static RoomGenerator instance;
+    public static RoomGenerator pInstance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<RoomGenerator>();
+            }
+            return instance;
+        }
+    }
+
+    private bool pRoomsSpawned
     {
         set
         {
@@ -53,7 +53,7 @@ public class RoomGenerator : MonoBehaviour
                 endRoom = closedRooms[0].SetEndRoom();
                 endRoom.PlaceDoorAtOrigin(doorPrefab);
                 endRoom.PlaceObject(exitPrefab, Vector3.zero);
-                
+
                 for (int i = 0; i < corridors.Count; i++)
                 {
                     enemySpawner.SpawnEnemies(EnemyType.Crawler, corridors[i]);
@@ -64,7 +64,19 @@ public class RoomGenerator : MonoBehaviour
             }
         }
     }
+    
+    public void SpawnKeys()
+    {
 
+        // the room at index 0 will be used as boss room
+        for (int i = 1; i < closedRooms.Count; i++)
+        {
+            GameObject placedKey = closedRooms[i].PlaceObject(keyPrefab, Vector3.zero);
+            GameManager.Instance.keysInLevel.Add(placedKey.GetComponent<Key>());
+        }
+    }
+    
+    
     private void Awake()
     {
         if (instance == null)
@@ -119,17 +131,6 @@ public class RoomGenerator : MonoBehaviour
             i++;
         }
         StartCoroutine(CloseRoomsWithoutDestination());
-    }
-
-    public void SpawnKeys()
-    {
-
-        // the room at index 0 will be used as boss room
-        for (int i = 1; i < closedRooms.Count; i++)
-        {
-            GameObject placedKey = closedRooms[i].PlaceObject(keyPrefab, Vector3.zero);
-            GameManager.Instance.keysInLevel.Add(placedKey.GetComponent<Key>());
-        }
     }
 
     private void CreateNewRoom(Compass _direction)
@@ -297,7 +298,7 @@ public class RoomGenerator : MonoBehaviour
             }
         }
 
-        RoomsSpawned = true;
+        pRoomsSpawned = true;
     }
 
     private Dictionary<Compass, Vector2Int> GetAdjacentCoords(Vector2Int _coord)

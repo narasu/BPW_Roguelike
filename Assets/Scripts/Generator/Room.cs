@@ -10,18 +10,13 @@ public enum Compass { C, N, E, S, W }
 public class Room : MonoBehaviour
 {
     public Vector2Int roomCoordinate;
-
     [HideInInspector]public Compass origin = Compass.C;
     [HideInInspector]public Compass destination = Compass.C;
     public List<Compass> openingDirections;
-    public Dictionary<Compass, Room> neighbors = new Dictionary<Compass, Room>();
+    private Dictionary<Compass, Room> neighbors = new Dictionary<Compass, Room>();
     private SpawnPoint[] spawnPoints;
     private int maxEnemies;
-
-    float stepSize = 4.0f;
-
-    //Dictionary<GameObject, Vector3> objectsInRoom = new Dictionary<GameObject, Vector3>();
-    GameObject door;
+    private float stepSize = 4.0f;
 
     public void Initialize(Compass _origin, Vector2Int _roomCoordinate)
     {
@@ -39,7 +34,6 @@ public class Room : MonoBehaviour
         }
     }
     
-
     //does this room have an opening, and an empty space at the given direction?
     public bool IsOpen(Compass _direction)
     {
@@ -123,7 +117,6 @@ public class Room : MonoBehaviour
         }
         return count;
     }
-
 
     public GameObject PlaceObject(GameObject _gameObject, Vector3 _offsetFromCenter)
     {

@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public List<Key> keysInLevel = new List<Key>();
+    public GameObject door;
     private static GameManager instance;
     public static GameManager Instance
     {
@@ -17,15 +19,11 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-    private GameFSM fsm;
+    private FSM<GameManager> fsm;
     RoomGenerator roomGenerator;
     [SerializeField] private GameObject keyPrefab;
-    public List<Key> keysInLevel = new List<Key>();
-    public GameObject door;
     [SerializeField] private EnemySpawner enemySpawner;
-
     private Dictionary<EnemyType, List<GameObject>> enemyDictionary;
-
     private bool keysCollected = false;
     private bool KeysCollected
     {
@@ -40,6 +38,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void AddEnemyToList(EnemyType _enemyType, GameObject _instantiatedObject) 
+    { 
+        enemyDictionary[_enemyType].Add(_instantiatedObject);
+    }
+
     private void Awake()
     {
         if (instance == null)
@@ -50,14 +58,14 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        fsm = new GameFSM();
+        fsm = new FSM<GameManager>();
         fsm.Initialize(this);
-        fsm.AddState(GameStateType.Setup, new SetupState());
-        fsm.AddState(GameStateType.Playing, new PlayingState());
-        fsm.AddState(GameStateType.Win, new WinState());
-        fsm.AddState(GameStateType.Lose, new LoseState());
+        fsm.AddState(new SetupState(fsm));
+        fsm.AddState(new PlayingState(fsm));
+        fsm.AddState(new WinState(fsm));
+        fsm.AddState(new LoseState(fsm));
         DontDestroyOnLoad(this);
-        roomGenerator = RoomGenerator.Instance;
+        roomGenerator = RoomGenerator.pInstance;
         enemyDictionary = new Dictionary<EnemyType, List<GameObject>>()
         {
             { EnemyType.Crawler, new List<GameObject>() },
@@ -87,13 +95,13 @@ public class GameManager : MonoBehaviour
 
     void OnPlayerDied()
     {
-        MenuManager.Instance.OpenMenu(MenuType.MENU_DEAD);
+        MenuManager.pInstance.OpenMenu(MenuType.MENU_DEAD);
         StartCoroutine(DelayedRestart());
     }
 
     void OnPlayerWin()
     {
-        MenuManager.Instance.OpenMenu(MenuType.MENU_WIN);
+        MenuManager.pInstance.OpenMenu(MenuType.MENU_WIN);
         Debug.Log(this);
         StartCoroutine(DelayedRestart());
     }
@@ -109,9 +117,5 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void RestartLevel() => 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-    public void AddEnemyToList(EnemyType _enemyType, GameObject _instantiatedObject) =>
-        enemyDictionary[_enemyType].Add(_instantiatedObject);
+    
 }

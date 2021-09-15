@@ -19,12 +19,12 @@ public class GameFSM
     public void AddState(GameStateType _newType, GameState _newState)
     {
         states.Add(_newType, _newState);
-        states[_newType].Initialize(this);
+        //states[_newType].Initialize(this);
     }
 
     public void UpdateState()
     {
-        currentState?.Update();
+        currentState?.OnUpdate();
     }
 
     public void GotoState(GameStateType _key)
@@ -34,13 +34,13 @@ public class GameFSM
             return;
         }
 
-        currentState?.Exit();
+        //currentState?.Exit();
 
         previousState = currentState;
         CurrentStateType = _key;
         currentState = states[CurrentStateType];
 
-        currentState.Enter();
+        currentState.OnEnter();
     }
 
     public GameState GetState(GameStateType _type)

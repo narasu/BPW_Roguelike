@@ -6,17 +6,6 @@ public class HealthDisplay : MonoBehaviour
 {
     [SerializeField] private GameObject heartPrefab;
     private Stack<GameObject> hearts;
-    
-    void Start()
-    {
-        EventManager.AddListener(EventType.PLAYER_HIT, RemoveHeart);
-        EventManager.AddListener(EventType.PLAYER_HEALED, AddHeart);
-        hearts = new Stack<GameObject>();
-        for (int i=0; i<Player.Instance.Health; i++)
-        {
-            AddHeart();
-        }
-    }
 
     public void AddHeart()
     {
@@ -29,4 +18,28 @@ public class HealthDisplay : MonoBehaviour
             Destroy(hearts.Pop());
         }
     }
+
+    void Start()
+    {
+        
+        hearts = new Stack<GameObject>();
+        for (int i=0; i<Player.pInstance.pHealth; i++)
+        {
+            AddHeart();
+        }
+    }
+
+    private void OnEnable()
+    {
+        EventManager.AddListener(EventType.PLAYER_HIT, RemoveHeart);
+        EventManager.AddListener(EventType.PLAYER_HEALED, AddHeart);
+    }
+    private void OnDisable()
+    {
+        EventManager.RemoveListener(EventType.PLAYER_HIT, RemoveHeart);
+        EventManager.RemoveListener(EventType.PLAYER_HEALED, AddHeart);
+    }
+
+    
+    
 }

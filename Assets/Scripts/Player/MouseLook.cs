@@ -9,7 +9,7 @@ public class MouseLook : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = Camera.main.nearClipPlane;
         Vector3 targetPosition = Camera.main.ScreenToWorldPoint(mousePos);
-        targetPosition.y = Player.Instance.transform.position.y;
+        targetPosition.y = Player.pInstance.transform.position.y;
         //Debug.Log(targetPosition);
         float angle = AngleBetweenTwoPoints(transform.position, targetPosition);
         transform.rotation = Quaternion.Euler(new Vector3(90.0f, angle, transform.rotation.z));

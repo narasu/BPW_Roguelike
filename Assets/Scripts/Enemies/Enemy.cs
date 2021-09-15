@@ -6,7 +6,11 @@ using UnityEngine;
 public class Enemy : MonoBehaviour, IDamageable
 {
     public float detectionDistance;
-    
+    public IDetectable target;
+    protected FSM<Enemy> fsm;
+    protected SpawnPoint spawnPoint;
+    [SerializeField] protected int health;
+
     public Enemy()
     {
         fsm = new FSM<Enemy>();
@@ -27,10 +31,10 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    private FSM<Enemy> fsm;
-    private SpawnPoint spawnPoint;
-
-    [SerializeField] protected int health;
+    private void Update()
+    {
+        fsm.Update();
+    }
 
     protected virtual void Die()
     {

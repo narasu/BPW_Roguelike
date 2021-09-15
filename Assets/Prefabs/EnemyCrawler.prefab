@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1328617482709439398}
   - component: {fileID: 1328617482709439392}
   - component: {fileID: 1328617482709439393}
+  - component: {fileID: 4638643121500121720}
   m_Layer: 10
   m_Name: EnemyCrawler
   m_TagString: Untagged
@@ -77,14 +78,28 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328617482709439397}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c7ebaa2b9e63504e9055dc45b442302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 2
   detectionDistance: 10.5
+  health: 2
   navMeshAgent: {fileID: 0}
+--- !u!114 &4638643121500121720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328617482709439397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abef1cf61a1854144bec849c6c45426b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectionDistance: 10.5
+  health: 2
 --- !u!1 &1328617483171394694
 GameObject:
   m_ObjectHideFlags: 0

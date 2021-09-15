@@ -29,7 +29,7 @@ public class CrawlerOld : Enemy
     {
         if (collision.gameObject.TryGetComponent(out Player player))
         {
-            if (!player.IsHit)
+            if (!player.pIsHit)
             {
                 player.TakeDamage();
             }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour, IWeapon
 {
+    public LayerMask layerMask;
     [SerializeField] private GameObject muzzleFlash;
     [SerializeField] private GameObject lineEffect;
     [SerializeField] private GameObject bulletImpact;
@@ -11,10 +12,10 @@ public class Weapon : MonoBehaviour, IWeapon
     [SerializeField] private float fireRate;
     [SerializeField] private Transform firePoint;
     [SerializeField] private bool automatic;
-    public LayerMask layerMask;
-
+    private float fireCooldown;
+    
     private bool canFire = true;
-    private bool CanFire
+    private bool pCanFire
     {
         set
         {
@@ -38,7 +39,6 @@ public class Weapon : MonoBehaviour, IWeapon
         }
     }
 
-    private float fireCooldown;
 
     private void Update()
     {
@@ -48,10 +48,10 @@ public class Weapon : MonoBehaviour, IWeapon
         }
         else if (collisionCount == 0)
         {
-            CanFire = true;
+            pCanFire = true;
         }
-        if (collisionCount > 0) CanFire = false;
-        else CanFire = true;
+        if (collisionCount > 0) pCanFire = false;
+        else pCanFire = true;
     }
 
     public virtual void Shoot()
@@ -77,7 +77,7 @@ public class Weapon : MonoBehaviour, IWeapon
         //RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right);
         //hit.collider?.GetComponent<IDamageable>()?.TakeDamage(damage);
 
-        CanFire = false;
+        pCanFire = false;
     }
 
     int collisionCount = 0;
