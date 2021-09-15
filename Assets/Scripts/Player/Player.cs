@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDetectable
 {
     
     [SerializeField] private int health;
@@ -18,6 +18,10 @@ public class Player : MonoBehaviour
     public bool IsHit { get => isHit; }
     private bool isHit = false;
     
+    public IDetectable ReturnTarget()
+    {
+        return this;
+    }
 
     private void Awake()
     {

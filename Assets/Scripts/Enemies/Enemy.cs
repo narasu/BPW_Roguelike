@@ -5,27 +5,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] protected int health;
     public float detectionDistance;
-    private SpawnPoint spawnPoint;
-
-    //protected Transform player;
-
-    public void Initialize(SpawnPoint _spawnPoint) => spawnPoint = _spawnPoint;
-
-    private void Start()
+    
+    public Enemy()
     {
-        
+        fsm = new FSM<Enemy>();
+        fsm.Initialize(this);
     }
 
-    protected virtual void Die()
-    {
-        //EventManager.RaiseEvent(EventType.ENEMY_KILLED);
-        //spawnPoint.Empty = true;
-        Destroy(gameObject);
-        
-        // spawn ammo/health
-    }
+    public void SetSpawnPoint(SpawnPoint _spawnPoint) => spawnPoint = _spawnPoint;
+
     public virtual void TakeDamage(int _damage)
     {
         Debug.Log(gameObject + " took " + _damage + " damage");
@@ -36,5 +25,19 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             Die();
         }
+    }
+
+    private FSM<Enemy> fsm;
+    private SpawnPoint spawnPoint;
+
+    [SerializeField] protected int health;
+
+    protected virtual void Die()
+    {
+        //EventManager.RaiseEvent(EventType.ENEMY_KILLED);
+        //spawnPoint.Empty = true;
+        Destroy(gameObject);
+
+        // spawn ammo/health
     }
 }

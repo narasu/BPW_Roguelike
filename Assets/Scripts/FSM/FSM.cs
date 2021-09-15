@@ -2,24 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FSM<T> : MonoBehaviour
+public class FSM<T>
 {
-    public T Owner { get; private set; }
-
+    public T Owner { get; protected set; }
     public void Initialize(T _owner)
     {
         Owner = _owner;
     }
-
-    // Start is called before the first frame update
-    void Start()
+    public void AddState(State<T> _state)
     {
-        
-    }
+        allStates.Add(_state.GetType(), _state);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
+    public void Update()
+    {
+        currentState?.OnUpdate();
+    }
+    public void SwitchState(System.Type _type)
+    {
+        currentState?.OnExit();
+        currentState = allStates[_type];
+        currentState?.OnEnter();
+    }
+    
+    private State<T> currentState;
+    private Dictionary<System.Type, State<T>> allStates = new Dictionary<System.Type, State<T>>();
+    
+
 }

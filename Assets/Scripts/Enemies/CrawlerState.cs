@@ -6,7 +6,7 @@ public enum EnemyStateType { Idle, Chase, Attack }
 public abstract class CrawlerState
 {
     protected CrawlerFSM owner;
-    protected Crawler enemy;
+    protected CrawlerOld enemy;
     protected Player player;
 
     public void Initialize(CrawlerFSM owner)

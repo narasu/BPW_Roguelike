@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CrawlerFSM
 {
-    public Crawler owner { get; private set; }
+    public CrawlerOld owner { get; private set; }
     private Dictionary<EnemyStateType, CrawlerState> states;
     public EnemyStateType CurrentStateType { get; private set; }
     private CrawlerState currentState;
     private CrawlerState previousState;
 
-    public void Initialize(Crawler _owner)
+    public void Initialize(CrawlerOld _owner)
     {
         owner = _owner;
         states = new Dictionary<EnemyStateType, CrawlerState>();
