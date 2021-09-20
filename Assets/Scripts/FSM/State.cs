@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class State<T>
 {
     //protected FSM owner;
-    public abstract void OnEnter();
-    public abstract void OnUpdate();
-    public abstract void OnExit();
+    public virtual void OnEnter() { }
+    public virtual void OnUpdate() { }
+    public virtual void OnExit() { }
 }

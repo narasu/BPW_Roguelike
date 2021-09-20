@@ -10,18 +10,6 @@ public class EnemyState : State<Enemy>
     {
         owner = _owner;
     }
-
-    public override void OnEnter()
-    {
-    }
-
-    public override void OnUpdate()
-    {
-    }
-
-    public override void OnExit()
-    {
-    }
 }
 
 public class EnemyIdleState : EnemyState
@@ -56,10 +44,6 @@ public class EnemyIdleState : EnemyState
         //}
         //Debug.Log("idle updating");
     }
-
-    public override void OnExit()
-    {
-    }
 }
 
 public class EnemyChaseState : EnemyState
@@ -75,10 +59,5 @@ public class EnemyChaseState : EnemyState
     public override void OnUpdate()
     {
         navMeshAgent.SetDestination(Player.pInstance.transform.position);
-    }
-
-    public override void OnExit()
-    {
-
     }
 }
