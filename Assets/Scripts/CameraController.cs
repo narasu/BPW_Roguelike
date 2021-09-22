@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    
     private void FixedUpdate()
     {
         Vector3 playerPos = Player.pInstance.transform.position;

@@ -54,14 +54,14 @@ public class Player : MonoBehaviour
         instance = this;
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            //shoot
-            activeWeapon.Shoot();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetMouseButton(0))
+    //    {
+    //        //shoot
+    //        activeWeapon.Shoot();
+    //    }
+    //}
 
     private void FixedUpdate()
     {

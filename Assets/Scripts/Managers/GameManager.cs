@@ -75,6 +75,8 @@ public class GameManager : MonoBehaviour
         EventManager.AddListener(EventType.PLAYER_DIED, OnPlayerDied);
         EventManager.AddListener(EventType.PLAYER_WIN, OnPlayerWin);
         EventManager.AddListener(EventType.KEY_COLLECTED, OnKeyCollected);
+
+        //TestClass test = Instantiate(new TestClass());
     }
 
     private void Update()

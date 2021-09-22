@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour, IWeapon
 {
+    private WeaponDecorator weaponDecorator;
     public LayerMask layerMask;
+    public int pDamage 
+    {
+        get => damage;
+        set => damage = value;
+    }
     [SerializeField] private GameObject muzzleFlash;
     [SerializeField] private GameObject lineEffect;
     [SerializeField] private GameObject bulletImpact;
     [SerializeField] private int ammo, damage;
     [SerializeField] private float fireRate;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private bool automatic;
+    [HideInInspector] public bool automatic;
     private float fireCooldown;
     
     private bool canFire = true;
@@ -39,19 +45,14 @@ public class Weapon : MonoBehaviour, IWeapon
         }
     }
 
-
-    private void Update()
+    public void Decorate(WeaponDecorator _decorator)
     {
-        if (fireCooldown > 0)
-        {
-            fireCooldown -= Time.deltaTime;
-        }
-        else if (collisionCount == 0)
-        {
-            pCanFire = true;
-        }
-        if (collisionCount > 0) pCanFire = false;
-        else pCanFire = true;
+        weaponDecorator = _decorator;
+    }
+
+    public void RemoveDecorator()
+    {
+        weaponDecorator = null;
     }
 
     public virtual void Shoot()
@@ -80,6 +81,32 @@ public class Weapon : MonoBehaviour, IWeapon
         pCanFire = false;
     }
 
+    private void Start()
+    {
+        automatic = false;
+    }
+
+    private void Update()
+    {
+        if (fireCooldown > 0)
+        {
+            fireCooldown -= Time.deltaTime;
+        }
+        else if (collisionCount == 0)
+        {
+            pCanFire = true;
+        }
+        if (collisionCount > 0) pCanFire = false;
+        else pCanFire = true;
+
+        if (Input.GetMouseButton(0))
+        {
+            Shoot();
+        }
+
+    }
+
+    
     int collisionCount = 0;
     private void OnTriggerEnter(Collider other)
     {
