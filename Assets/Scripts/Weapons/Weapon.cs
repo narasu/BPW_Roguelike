@@ -88,16 +88,17 @@ public class Weapon : MonoBehaviour, IWeapon
 
     private void Update()
     {
+        if (collisionCount > 0) pCanFire = false;
+
         if (fireCooldown > 0)
         {
+            pCanFire = false;
             fireCooldown -= Time.deltaTime;
         }
         else if (collisionCount == 0)
         {
             pCanFire = true;
         }
-        if (collisionCount > 0) pCanFire = false;
-        else pCanFire = true;
 
         if (Input.GetMouseButton(0))
         {
