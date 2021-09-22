@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class InputHandler
 {
-    private ICommand MouseButtonPressed;
-    private ICommand MouseDeltaCommand;
-    private ICommand MovementAxisCommand;
+    public ICommand MouseButtonPressed;
+    public ICommand MousePositionChanged;
+    public ICommand MovementAxisPressed;
 
-
+    
 }
