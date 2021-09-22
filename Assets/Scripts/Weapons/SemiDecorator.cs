@@ -8,13 +8,12 @@ public class SemiDecorator : WeaponDecorator
     //public SemiDecorator(Weapon _owner) : base(_owner)
     //{
     //}
-
-    public override void Disable()
-    {
-    }
-
     public override void Init(Weapon _owner)
     {
         base.Init(_owner);
+        owner.automatic = false;
+    }
+    public override void Disable()
+    {
     }
 }
